@@ -1,0 +1,113 @@
+@startuml
+hide circles
+
+package Pricer
+{
+    package PriceableElements
+    {
+        abstract class PriceableElement
+        {
+            {abstract} +getBasePrice(valuationDate: Date, market: Market)
+        }
+
+        abstract class Deal
+        {
+            {abstract} +getPaymentDates(): Date[0..*]
+            {abstract} +getPaymentAmount(paymentDate: Date, market: Market)
+        }
+        Deal ..> Market
+
+        class VanillaStructuredProduct
+        {
+            +getPaymentDates(): Date[0..*]
+            +getPaymentAmount(paymentDate: Date, market: Market)
+            +getBasePrice(valuationDate: Date, market: Market)
+            {static} +setPricerCreator(newPricerCreator: ExoticPricerFactory)
+        }
+        VanillaStructuredProduct -up-|> Deal
+        VanillaStructuredProduct -up-|> PriceableElement
+        VanillaStructuredProduct ..> VanillaPricer
+        VanillaStructuredProduct --> "pricerCreator" VanillaPricerFactory: <<static>>
+
+        class Autocall
+        {
+            +getPaymentDates(): Date[0..*]
+            +getPaymentAmount(paymentDate: Date, market: Market)
+            +getBasePrice(valuationDate: Date, market: Market)
+            {static} +setPricerCreator(newPricerCreator: VanillaPricerFactory)
+        }
+        Autocall -up-|> Deal
+        Autocall -up-|> PriceableElement
+        Autocall ..> ExoticPricer
+        Autocall --> "pricerCreator" ExoticPricerFactory: <<static>>
+
+        interface ExoticPricer
+        {
+            {abstract} +getBasePrice(pricedElement: Deal, valuationDate: Date)
+        }
+        ExoticPricer -up..> Deal
+
+        interface Market
+        {
+            {abstract} +getQuote(ticker, observationDate: Date)
+        }
+
+        abstract class VanillaPricer
+        {
+            {abstract} +getDiscountFactor(valuationDate: Date, maturityDate: Date)
+            {abstract} +getImpliedVolatility(ticker, valuationDate: Date, maturityDate: Date)
+            {abstract} +getImpliedCorrelation(firstTicker, secondTicker, valuationDate: Date, maturityDate: Date)
+        }
+
+        abstract class VanillaPricerFactory
+        {
+            {abstract} +createVanillaPricer(market: Market): VanillaPricer
+        }
+        VanillaPricerFactory ..> VanillaPricer
+        VanillaPricerFactory ..> Market
+
+
+        abstract class ExoticPricerFactory
+        {
+            {abstract} +createExoticPricer(market: Market): SimulationPricer
+        }
+        ExoticPricerFactory ..> ExoticPricer
+        ExoticPricerFactory ..> Market
+    }
+
+
+'    class Simulations
+'    {
+'    }
+'
+''
+'    'VanillaPricer --> Market
+'
+'    class SimulatedMarket
+'    {
+'        -simulationIndex
+'        +getQuote(ticker, observationDate: Date)
+'    }
+'    SimulatedMarket -up-|> Market
+'    SimulatedMarket --> "originalMarket" Market
+'    SimulatedMarket --> "amendment" Simulations
+'
+'
+'    class CustomMarket
+'    CustomMarket -up-|> Market
+'
+'        class SimulationPricer
+'    {
+'        {static} +create(market: Market)
+'        +getBasePrice(pricedElement: Deal, valuationDate: Date)
+'    }
+'    SimulationPricer -up-|> ExoticPricer
+'    SimulationPricer -up-|> ExoticPricerFactory
+'    SimulationPricer --> Market
+'    SimulationPricer -> VanillaPricer
+'    SimulationPricer ..> Simulations
+'    SimulationPricer ..> SimulatedMarket
+
+}
+
+@enduml
