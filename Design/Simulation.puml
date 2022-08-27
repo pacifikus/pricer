@@ -27,7 +27,7 @@ package PriceCalculator
     {
         class GeometricBrownianMotion
         {
-            {static} +create(variableNames, observationDate: Date, simulationDates: Date[1..*], drift: DiscountCurve, covariance: Covariance)
+            {static} +create(variableNames, observationDate: Date, simulationDates: Date[1..*], initialValues, drift: DiscountCurve, covariance: Covariance)
             +getSimulatedValue(variableName, simulationDate: Date, simulationIndex)
         }
     }
