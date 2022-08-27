@@ -1,0 +1,79 @@
+@startuml
+hide circles
+
+!includesub PriceableElements.puml!VanillaPricer
+!includesub PriceableElements.puml!ExoticPricer
+!includesub PriceableElements.puml!Market
+!includesub PriceableElements.puml!ExoticPricerFactory
+
+
+!startsub Simulations
+package Pricer
+{
+    package Pricers
+    {
+        class Simulations
+        {
+        }
+    }
+}
+!endsub
+
+
+!startsub SimulatedMarket
+package Pricer
+{
+    package Pricers
+    {
+        class SimulatedMarket
+        {
+            -simulationIndex
+            +getQuote(ticker, observationDate: Date)
+        }
+    }
+}
+!endsub
+
+
+!startsub SampleVanillaPricer
+package Pricer
+{
+    package Pricers
+    {
+        class SampleVanillaPricer
+        {
+        }
+        SampleVanillaPricer -up--|> VanillaPricer
+    }
+}
+!endsub
+
+
+!startsub SimulationPricer
+package Pricer
+{
+    package Pricers
+    {
+        class SimulationPricer
+        {
+            {static} +createExoticPricer(market: Market): ExoticPricer
+            {static} +create(market: Market)
+            +getBasePrice(pricedElement: Deal, valuationDate: Date)
+        }
+    }
+}
+!endsub
+
+
+SimulatedMarket -up--|> Market
+SimulatedMarket -up--> "originalMarket" Market
+SimulatedMarket --> "amendment" Simulations
+SimulationPricer -up--|> ExoticPricer
+SimulationPricer --|> ExoticPricerFactory
+SimulationPricer --> Market
+SimulationPricer --> SampleVanillaPricer
+SimulationPricer ..> Simulations
+SimulationPricer ..> SimulatedMarket
+
+
+@enduml

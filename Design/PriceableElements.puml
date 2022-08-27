@@ -1,0 +1,154 @@
+@startuml
+hide circles
+
+
+!startsub Deal
+package Pricer
+{
+    package PriceableElements
+    {
+        abstract class Deal
+        {
+            {abstract} +getPaymentDates(): Date[0..*]
+            {abstract} +getPaymentAmount(paymentDate: Date, market: Market)
+        }
+    }
+}
+!endsub
+
+
+!startsub PriceableElement
+package Pricer
+{
+    package PriceableElements
+    {
+        abstract class PriceableElement
+        {
+            {abstract} +getBasePrice(valuationDate: Date, market: Market)
+        }
+    }
+}
+!endsub
+
+
+!startsub VanillaPricer
+package Pricer
+{
+    package PriceableElements
+    {
+        abstract class VanillaPricer
+        {
+            {abstract} +getDiscountFactor(valuationDate: Date, maturityDate: Date)
+            {abstract} +getImpliedVolatility(ticker, valuationDate: Date, maturityDate: Date)
+            {abstract} +getImpliedCorrelation(firstTicker, secondTicker, valuationDate: Date, maturityDate: Date)
+        }
+    }
+}
+!endsub
+
+
+!startsub ExoticPricer
+package Pricer
+{
+    package PriceableElements
+    {
+        interface ExoticPricer
+            {
+                {abstract} +getBasePrice(pricedElement: Deal, valuationDate: Date)
+            }
+    }
+}
+!endsub
+
+!startsub Market
+package Pricer
+{
+    package PriceableElements
+    {
+        interface Market
+        {
+            {abstract} +getQuote(ticker, observationDate: Date)
+        }
+    }
+}
+!endsub
+
+
+!startsub ExoticPricerFactory
+package Pricer
+{
+    package PriceableElements
+    {
+        abstract class ExoticPricerFactory
+        {
+            {static} {abstract} +createExoticPricer(market: Market): ExoticPricer
+        }
+    }
+}
+!endsub
+
+
+!startsub VanillaStructuredProduct
+package Pricer
+{
+    package PriceableElements
+    {
+        class VanillaStructuredProduct
+        {
+            +getPaymentDates(): Date[0..*]
+            +getPaymentAmount(paymentDate: Date, market: Market)
+            +getBasePrice(valuationDate: Date, market: Market)
+            {static} +setPricerCreator(newPricerCreator: ExoticPricerFactory)
+        }
+    }
+}
+!endsub
+
+
+!startsub Autocall
+package Pricer
+{
+    package PriceableElements
+    {
+        class Autocall
+        {
+            +getPaymentDates(): Date[0..*]
+            +getPaymentAmount(paymentDate: Date, market: Market)
+            +getBasePrice(valuationDate: Date, market: Market)
+            {static} +setPricerCreator(newPricerCreator: VanillaPricerFactory)
+        }
+    }
+}
+!endsub
+
+
+!startsub VanillaPricerFactory
+package Pricer
+{
+    package PriceableElements
+    {
+        abstract class VanillaPricerFactory
+        {
+            {static} {abstract} +createVanillaPricer(market: Market): VanillaPricer
+        }
+    }
+}
+!endsub
+
+Deal ..> Market
+ExoticPricer -up..> Deal
+ExoticPricerFactory ..> ExoticPricer
+ExoticPricerFactory ..> Market
+VanillaStructuredProduct -up-|> Deal
+VanillaStructuredProduct -up-|> PriceableElement
+VanillaStructuredProduct ..> VanillaPricer
+VanillaStructuredProduct --> "pricerCreator" VanillaPricerFactory: <<static>>
+Autocall -up-|> Deal
+Autocall -up-|> PriceableElement
+Autocall ..> ExoticPricer
+Autocall --> "pricerCreator" ExoticPricerFactory: <<static>>
+VanillaPricerFactory ..> VanillaPricer
+VanillaPricerFactory ..> Market
+
+
+@enduml
