@@ -2,12 +2,26 @@
 hide circles
 
 
-!startsub Deal
-package Pricer
+!startsub PriceableElement
+package PriceCalculator
 {
     package PriceableElements
     {
-        abstract class Deal
+        abstract class PriceableElement
+        {
+            +getPrice(valuationDate: Date, market: Market)
+        }
+    }
+}
+!endsub
+
+
+!startsub CashFlow
+package PriceCalculator
+{
+    package PriceableElements
+    {
+        abstract class CashFlow
         {
             {abstract} +getPaymentDates(): Date[0..*]
             {abstract} +getPaymentAmount(paymentDate: Date, market: Market)
@@ -17,51 +31,41 @@ package Pricer
 !endsub
 
 
-!startsub PriceableElement
-package Pricer
+!startsub Derivative
+package PriceCalculator
 {
     package PriceableElements
     {
-        abstract class PriceableElement
+        abstract class Derivative
         {
-            {abstract} +getBasePrice(valuationDate: Date, market: Market)
+            +getPrice(valuationDate: Date, market: Market)
+            {abstract} +getBasePrice(valuationDate: Date, pricer: Pricer)
+            {static} +setPricerCreator(newPricerCreator: PricerFactory)
         }
     }
 }
 !endsub
 
 
-!startsub VanillaPricer
-package Pricer
+
+!startsub Pricer
+package PriceCalculator
 {
     package PriceableElements
     {
-        abstract class VanillaPricer
+        abstract class Pricer
         {
             {abstract} +getDiscountFactor(valuationDate: Date, maturityDate: Date)
-            {abstract} +getImpliedVolatility(ticker, valuationDate: Date, maturityDate: Date)
-            {abstract} +getImpliedCorrelation(firstTicker, secondTicker, valuationDate: Date, maturityDate: Date)
+            {abstract} +getCallOptionBasePrice(ticker, strike, valuationDate: Date, maturityDate: Date)
+            {abstract} +getBasePrice(pricedElement: CashFlow, valuationDate: Date)
         }
     }
 }
 !endsub
 
 
-!startsub ExoticPricer
-package Pricer
-{
-    package PriceableElements
-    {
-        interface ExoticPricer
-            {
-                {abstract} +getBasePrice(pricedElement: Deal, valuationDate: Date)
-            }
-    }
-}
-!endsub
-
 !startsub Market
-package Pricer
+package PriceCalculator
 {
     package PriceableElements
     {
@@ -74,14 +78,14 @@ package Pricer
 !endsub
 
 
-!startsub ExoticPricerFactory
-package Pricer
+!startsub PricerFactory
+package PriceCalculator
 {
     package PriceableElements
     {
-        abstract class ExoticPricerFactory
+        abstract class PricerFactory
         {
-            {static} {abstract} +createExoticPricer(market: Market): ExoticPricer
+            {static} {abstract} +createPricer(market: Market): Pricer
         }
     }
 }
@@ -89,7 +93,7 @@ package Pricer
 
 
 !startsub VanillaStructuredProduct
-package Pricer
+package PriceCalculator
 {
     package PriceableElements
     {
@@ -98,7 +102,6 @@ package Pricer
             +getPaymentDates(): Date[0..*]
             +getPaymentAmount(paymentDate: Date, market: Market)
             +getBasePrice(valuationDate: Date, market: Market)
-            {static} +setPricerCreator(newPricerCreator: ExoticPricerFactory)
         }
     }
 }
@@ -106,7 +109,7 @@ package Pricer
 
 
 !startsub Autocall
-package Pricer
+package PriceCalculator
 {
     package PriceableElements
     {
@@ -115,40 +118,23 @@ package Pricer
             +getPaymentDates(): Date[0..*]
             +getPaymentAmount(paymentDate: Date, market: Market)
             +getBasePrice(valuationDate: Date, market: Market)
-            {static} +setPricerCreator(newPricerCreator: VanillaPricerFactory)
         }
     }
 }
 !endsub
 
 
-!startsub VanillaPricerFactory
-package Pricer
-{
-    package PriceableElements
-    {
-        abstract class VanillaPricerFactory
-        {
-            {static} {abstract} +createVanillaPricer(market: Market): VanillaPricer
-        }
-    }
-}
-!endsub
-
-Deal ..> Market
-ExoticPricer -up..> Deal
-ExoticPricerFactory ..> ExoticPricer
-ExoticPricerFactory ..> Market
-VanillaStructuredProduct -up-|> Deal
-VanillaStructuredProduct -up-|> PriceableElement
-VanillaStructuredProduct ..> VanillaPricer
-VanillaStructuredProduct --> "pricerCreator" VanillaPricerFactory: <<static>>
-Autocall -up-|> Deal
-Autocall -up-|> PriceableElement
-Autocall ..> ExoticPricer
-Autocall --> "pricerCreator" ExoticPricerFactory: <<static>>
-VanillaPricerFactory ..> VanillaPricer
-VanillaPricerFactory ..> Market
+PriceableElement ..> Market
+Derivative --> "pricerCreator" PricerFactory: <<static>>
+Derivative -up-|> PriceableElement
+Derivative ..> Pricer
+Pricer -up..> CashFlow
+VanillaStructuredProduct -up-|> CashFlow
+VanillaStructuredProduct -up-|> Derivative
+Autocall -up-|> CashFlow
+Autocall -up-|> Derivative
+PricerFactory ..> Pricer
+PricerFactory ..> Market
 
 
 @enduml

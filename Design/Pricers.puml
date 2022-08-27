@@ -1,16 +1,15 @@
 @startuml
 hide circles
 
-!includesub PriceableElements.puml!VanillaPricer
-!includesub PriceableElements.puml!ExoticPricer
+!includesub PriceableElements.puml!Pricer
 !includesub PriceableElements.puml!Market
-!includesub PriceableElements.puml!ExoticPricerFactory
+!includesub PriceableElements.puml!PricerFactory
 
 
 !startsub Simulations
-package Pricer
+package PriceCalculator
 {
-    package Pricers
+    package PriceCalculators
     {
         class Simulations
         {
@@ -21,9 +20,9 @@ package Pricer
 
 
 !startsub SimulatedMarket
-package Pricer
+package PriceCalculator
 {
-    package Pricers
+    package PriceCalculators
     {
         class SimulatedMarket
         {
@@ -35,30 +34,30 @@ package Pricer
 !endsub
 
 
-!startsub SampleVanillaPricer
-package Pricer
+!startsub SamplePricer
+package PriceCalculator
 {
-    package Pricers
+    package PriceCalculators
     {
-        class SampleVanillaPricer
+        class SamplePricer
         {
         }
-        SampleVanillaPricer -up--|> VanillaPricer
+        SamplePricer -up--|> Pricer
     }
 }
 !endsub
 
 
 !startsub SimulationPricer
-package Pricer
+package PriceCalculator
 {
-    package Pricers
+    package PriceCalculators
     {
         class SimulationPricer
         {
-            {static} +createExoticPricer(market: Market): ExoticPricer
+            {static} +createPricer(market: Market): Pricer
             {static} +create(market: Market)
-            +getBasePrice(pricedElement: Deal, valuationDate: Date)
+            +getBasePrice(pricedElement: CashFlow, valuationDate: Date)
         }
     }
 }
@@ -68,10 +67,10 @@ package Pricer
 SimulatedMarket -up--|> Market
 SimulatedMarket -up--> "originalMarket" Market
 SimulatedMarket --> "amendment" Simulations
-SimulationPricer -up--|> ExoticPricer
-SimulationPricer --|> ExoticPricerFactory
+SimulationPricer -up--|> Pricer
+SimulationPricer --|> PricerFactory
 SimulationPricer --> Market
-SimulationPricer --> SampleVanillaPricer
+SimulationPricer --> SamplePricer
 SimulationPricer ..> Simulations
 SimulationPricer ..> SimulatedMarket
 
