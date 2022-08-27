@@ -55,7 +55,7 @@ package PriceCalculator
     {
         class SimulationPricer
         {
-            {static} +createPricer(market: Market): Pricer
+            {static} +createPricer(underlyings, valuationDate: Date, market: Market): Pricer
             {static} +create(market: Market)
             +getBasePrice(pricedElement: CashFlow, valuationDate: Date)
         }

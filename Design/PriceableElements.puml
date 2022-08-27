@@ -56,7 +56,7 @@ package PriceCalculator
         abstract class Pricer
         {
             {abstract} +getDiscountFactor(valuationDate: Date, maturityDate: Date)
-            {abstract} +getCallOptionBasePrice(ticker, strike, valuationDate: Date, maturityDate: Date)
+            {abstract} +getCallOptionBasePrice(underlyings, strike, valuationDate: Date, maturityDate: Date)
             {abstract} +getBasePrice(pricedElement: CashFlow, valuationDate: Date)
         }
     }
@@ -85,7 +85,7 @@ package PriceCalculator
     {
         abstract class PricerFactory
         {
-            {static} {abstract} +createPricer(market: Market): Pricer
+            {static} {abstract} +createPricer(underlyings, valuationDate: Date, market: Market): Pricer
         }
     }
 }
@@ -101,7 +101,7 @@ package PriceCalculator
         {
             +getPaymentDates(): Date[0..*]
             +getPaymentAmount(paymentDate: Date, market: Market)
-            +getBasePrice(valuationDate: Date, market: Market)
+            +getBasePrice(valuationDate: Date, pricer: Pricer)
         }
     }
 }
@@ -117,7 +117,7 @@ package PriceCalculator
         {
             +getPaymentDates(): Date[0..*]
             +getPaymentAmount(paymentDate: Date, market: Market)
-            +getBasePrice(valuationDate: Date, market: Market)
+            +getBasePrice(valuationDate: Date, pricer: Pricer)
         }
     }
 }
