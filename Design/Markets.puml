@@ -9,7 +9,7 @@ package PriceCalculator
 {
     package Markets
     {
-        abstract class MoexMarket
+        class MoexMarket
         {
             {static} +create()
             +getQuotes(ticker, observationDates: Date[1..*])
