@@ -11,7 +11,7 @@ package PriceCalculator
 {
     package Simulation
     {
-        class Simulation
+        abstract class Simulation
         {
             {abstract} +getSimulatedValue(variableName, simulationDate: Date, simulationIndex)
         }
@@ -55,7 +55,7 @@ package PriceCalculator
 {
     package Simulation
     {
-        class Covariance
+        abstract class Covariance
         {
             {abstract} +getTotalCovariance(forecastDate: Date)
         }
@@ -68,7 +68,7 @@ package PriceCalculator
 {
     package Simulation
     {
-        class DiscountCurve
+        abstract class DiscountCurve
         {
             {abstract} +getDiscountFactor(paymentDate: Date)
         }
