@@ -4,6 +4,6 @@ hide attributes
 hide methods
 
 !include PriceableElements.puml
-!include Pricers.puml
+!include Simulation.puml
 
 @enduml
