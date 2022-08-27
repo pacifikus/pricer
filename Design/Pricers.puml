@@ -6,13 +6,29 @@ hide circles
 !includesub PriceableElements.puml!PricerFactory
 
 
-!startsub Simulations
+!startsub Simulation
 package PriceCalculator
 {
-    package PriceCalculators
+    package Simulation
     {
-        class Simulations
+        class Simulation
         {
+            {abstract} +getSimulatedValue(variableName, simulationDate: Date, simulationIndex)
+        }
+    }
+}
+!endsub
+
+
+!startsub GeometricBrownianMotion
+package PriceCalculator
+{
+    package Simulation
+    {
+        class GeometricBrownianMotion
+        {
+            {static} +create(variableNames, observationDate: Date, simulationDates: Date[1..*], drift: DiscountCurve, covariance: Covariance)
+            +getSimulatedValue(variableName, simulationDate: Date, simulationIndex)
         }
     }
 }
@@ -22,7 +38,7 @@ package PriceCalculator
 !startsub SimulatedMarket
 package PriceCalculator
 {
-    package PriceCalculators
+    package Simulation
     {
         class SimulatedMarket
         {
@@ -34,29 +50,69 @@ package PriceCalculator
 !endsub
 
 
-!startsub SamplePricer
+!startsub Covariance
 package PriceCalculator
 {
-    package PriceCalculators
+    package Simulation
     {
-        class SamplePricer
+        class Covariance
         {
+            {abstract} +getTotalCovariance(forecastDate: Date)
         }
-        SamplePricer -up--|> Pricer
     }
-}
+!endsub
+
+
+!startsub DiscountCurve
+package PriceCalculator
+{
+    package Simulation
+    {
+        class DiscountCurve
+        {
+            {abstract} +getDiscountFactor(paymentDate: Date)
+        }
+    }
+!endsub
+
+
+!startsub FlatHistoricalCovariance
+package PriceCalculator
+{
+    package Simulation
+    {
+        class FlatHistoricalCovariance
+        {
+            {static} +create(underlyings, observationDate: Date, market: Market)
+            +getTotalCovariance(forecastDate: Date)
+        }
+    }
+!endsub
+
+
+!startsub IndexDiscountCurve
+package PriceCalculator
+{
+    package Simulation
+    {
+        class IndexDiscountCurve
+        {
+            {static} +create(valuationDate: Date, tenors, tickers, market: Market)
+            +getDiscountFactor(paymentDate: Date)
+        }
+    }
 !endsub
 
 
 !startsub SimulationPricer
 package PriceCalculator
 {
-    package PriceCalculators
+    package Simulation
     {
         class SimulationPricer
         {
             {static} +createPricer(underlyings, valuationDate: Date, market: Market): Pricer
-            {static} +create(market: Market)
+            {static} +create(underlyings, valuationDate: Date, market: Market)
             +getBasePrice(pricedElement: CashFlow, valuationDate: Date)
         }
     }
@@ -64,14 +120,20 @@ package PriceCalculator
 !endsub
 
 
+GeometricBrownianMotion -up-|> Simulation
+GeometricBrownianMotion --> "drift" DiscountCurve
+GeometricBrownianMotion --> "covariance" Covariance
+IndexDiscountCurve -up-|> DiscountCurve
+FlatHistoricalCovariance -up-|> Covariance
 SimulatedMarket -up--|> Market
 SimulatedMarket -up--> "originalMarket" Market
-SimulatedMarket --> "amendment" Simulations
+SimulatedMarket --> "amendment" Simulation
 SimulationPricer -up--|> Pricer
 SimulationPricer --|> PricerFactory
 SimulationPricer --> Market
-SimulationPricer --> SamplePricer
-SimulationPricer ..> Simulations
+SimulationPricer ..> IndexDiscountCurve
+SimulationPricer ..> FlatHistoricalCovariance
+SimulationPricer --> Simulation
 SimulationPricer ..> SimulatedMarket
 
 
