@@ -1,0 +1,25 @@
+@startuml
+hide circles
+
+!includesub PriceableElements.puml!Market
+
+
+!startsub MoexMarket
+package PriceCalculator
+{
+    package Markets
+    {
+        abstract class MoexMarket
+        {
+            {static} +create()
+            +getQuotes(ticker, observationDates: Date[1..*])
+        }
+    }
+}
+!endsub
+
+
+MoexMarket -up-|> Market
+
+
+@enduml

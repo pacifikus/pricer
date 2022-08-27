@@ -43,7 +43,7 @@ package PriceCalculator
         class SimulatedMarket
         {
             -simulationIndex
-            +getQuote(ticker, observationDate: Date)
+            +getQuotes(ticker, observationDates: Date[1..*])
         }
     }
 }
