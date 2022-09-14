@@ -23,8 +23,8 @@ package PriceCalculator
     {
         abstract class CashFlow
         {
-            {abstract} +getPaymentDates(): Date[0..*]
-            {abstract} +getPaymentAmount(paymentDate: Date, market: Market)
+            {abstract} +getPaymentDates(): Date[1..*]
+            {abstract} +getPaymentAmount(paymentDate: Date, market: QuoteProvider)
         }
     }
 }
@@ -85,7 +85,7 @@ package PriceCalculator
     {
         abstract class PricerFactory
         {
-            {static} {abstract} +createPricer(underlyings, valuationDate: Date, market: Market): Pricer
+            {static} {abstract} +createPricer(underlyings, valuationDate: Date, market: QuoteProvider): Pricer
         }
     }
 }
@@ -99,9 +99,14 @@ package PriceCalculator
     {
         class VanillaStructuredProduct
         {
-            +getPaymentDates(): Date[0..*]
-            +getPaymentAmount(paymentDate: Date, market: Market)
-            +getBasePrice(valuationDate: Date, pricer: Pricer)
+            -underlying: String
+            -participation: Real
+            -strike: Real
+            -maturityDate: Date
+            {static} +create(underlying: String, participation: Real, strike: Real, maturityDate: Date)
+            +getPaymentDates(): Date[1..*]
+            +getPaymentAmount(paymentDate: Date, market: QuoteProvider): Real
+            +getBasePrice(valuationDate: Date, pricer: Pricer): Real
         }
     }
 }
@@ -115,8 +120,8 @@ package PriceCalculator
     {
         class Autocall
         {
-            +getPaymentDates(): Date[0..*]
-            +getPaymentAmount(paymentDate: Date, market: Market)
+            +getPaymentDates(): Date[1..*]
+            +getPaymentAmount(paymentDate: Date, market: QuoteProvider)
             +getBasePrice(valuationDate: Date, pricer: Pricer)
         }
     }
