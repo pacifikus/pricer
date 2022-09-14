@@ -2,7 +2,7 @@
 hide circles
 
 !includesub PriceableElements.puml!Pricer
-!includesub PriceableElements.puml!Market
+!includesub PriceableElements.puml!QuoteProvider
 !includesub PriceableElements.puml!PricerFactory
 
 
@@ -27,7 +27,7 @@ package PriceCalculator
     {
         class GeometricBrownianMotion
         {
-            {static} +create(variableNames, observationDate: Date, simulationDates: Date[1..*], initialValues, drift: DiscountCurve, covariance: Covariance)
+            {static} +create(variableNames[1..*], observationDate: Date, simulationDates: Date[1..*], initialValues[1..*], drift: DiscountCurve[1..*], covariance: Covariance)
             +getSimulatedValue(variableName, simulationDate: Date, simulationIndex)
         }
     }
@@ -35,12 +35,12 @@ package PriceCalculator
 !endsub
 
 
-!startsub SimulatedMarket
+!startsub SimulatedQuoteProvider
 package PriceCalculator
 {
     package Simulation
     {
-        class SimulatedMarket
+        class SimulatedQuoteProvider
         {
             -simulationIndex
             +getQuotes(ticker, observationDates: Date[1..*])
@@ -111,8 +111,8 @@ package PriceCalculator
     {
         class SimulationPricer
         {
-            {static} +createPricer(underlyings, valuationDate: Date, market: Market): Pricer
-            {static} +create(underlyings, valuationDate: Date, market: Market)
+            {static} +createPricer(underlyings, valuationDate: Date, market: QuoteProvider): Pricer
+            {static} +create(underlyings, valuationDate: Date, market: QuoteProvider)
             +getBasePrice(pricedElement: CashFlow, valuationDate: Date)
         }
     }
@@ -125,16 +125,17 @@ GeometricBrownianMotion --> "drift" DiscountCurve
 GeometricBrownianMotion --> "covariance" Covariance
 IndexDiscountCurve -up-|> DiscountCurve
 FlatHistoricalCovariance -up-|> Covariance
-SimulatedMarket -up--|> Market
-SimulatedMarket -up--> "originalMarket" Market
-SimulatedMarket --> "amendment" Simulation
+FlatHistoricalCovariance --> "market" QuoteProvider
+SimulatedQuoteProvider -up--|> QuoteProvider
+SimulatedQuoteProvider -up--> "originalQuoteProvider" QuoteProvider
+SimulatedQuoteProvider --> "amendment" Simulation
 SimulationPricer -up--|> Pricer
 SimulationPricer --|> PricerFactory
-SimulationPricer --> Market
+SimulationPricer --> QuoteProvider
 SimulationPricer ..> IndexDiscountCurve
 SimulationPricer ..> FlatHistoricalCovariance
 SimulationPricer --> Simulation
-SimulationPricer ..> SimulatedMarket
+SimulationPricer ..> SimulatedQuoteProvider
 
 
 @enduml

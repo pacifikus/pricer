@@ -3,7 +3,10 @@ hide circles
 hide attributes
 hide methods
 
-!include Markets.puml
+hide Simulation
+hide QuoteProviders
+
+!include QuoteProviders.puml
 !include PriceableElements.puml
 !include Simulation.puml
 

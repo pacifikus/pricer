@@ -1,0 +1,40 @@
+@startuml
+hide circles
+
+!includesub PriceableElements.puml!QuoteProvider
+
+
+!startsub FinamQuoteProvider
+package PriceCalculator
+{
+    package QuoteProviders
+    {
+        class FinamQuoteProvider
+        {
+            {static} +create()
+            +getQuotes(ticker, observationDates: Date[1..*])
+        }
+    }
+}
+!endsub
+
+
+!startsub MoexGCurveQuoteProvider
+package PriceCalculator
+{
+    package QuoteProviders
+    {
+        class MoexGCurveQuoteProvider
+        {
+            {static} +create()
+            +getQuotes(ticker, observationDates: Date[1..*])
+        }
+    }
+}
+!endsub
+
+
+FinamQuoteProvider -up-|> QuoteProvider
+MoexGCurveQuoteProvider -up-|> QuoteProvider
+
+@enduml

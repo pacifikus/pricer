@@ -9,7 +9,7 @@ package PriceCalculator
     {
         abstract class PriceableElement
         {
-            +getPrice(valuationDate: Date, market: Market)
+            {abstract} +getPrice(valuationDate: Date, market: QuoteProvider)
         }
     }
 }
@@ -38,7 +38,7 @@ package PriceCalculator
     {
         abstract class Derivative
         {
-            +getPrice(valuationDate: Date, market: Market)
+            +getPrice(valuationDate: Date, market: QuoteProvider)
             {abstract} +getBasePrice(valuationDate: Date, pricer: Pricer)
             {static} +setPricerCreator(newPricerCreator: PricerFactory)
         }
@@ -64,12 +64,12 @@ package PriceCalculator
 !endsub
 
 
-!startsub Market
+!startsub QuoteProvider
 package PriceCalculator
 {
     package PriceableElements
     {
-        abstract class Market
+        abstract class QuoteProvider
         {
             {abstract} +getQuotes(ticker, observationDates: Date[1..*])
         }
@@ -124,7 +124,7 @@ package PriceCalculator
 !endsub
 
 
-PriceableElement ..> Market
+PriceableElement ..> QuoteProvider
 Derivative --> "pricerCreator" PricerFactory: <<static>>
 Derivative -up-|> PriceableElement
 Derivative ..> Pricer
@@ -134,7 +134,7 @@ VanillaStructuredProduct -up-|> Derivative
 Autocall -up-|> CashFlow
 Autocall -up-|> Derivative
 PricerFactory ..> Pricer
-PricerFactory ..> Market
+PricerFactory ..> QuoteProvider
 
 
 @enduml
