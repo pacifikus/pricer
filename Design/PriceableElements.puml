@@ -56,7 +56,7 @@ package PriceCalculator
         abstract class Pricer
         {
             {abstract} +getDiscountFactor(valuationDate: Date, maturityDate: Date)
-            {abstract} +getCallOptionBasePrice(underlyings, strike, valuationDate: Date, maturityDate: Date)
+            {abstract} +getCallOptionBasePrice(underlying, strike, valuationDate: Date, maturityDate: Date)
             {abstract} +getBasePrice(pricedElement: CashFlow, valuationDate: Date)
         }
     }
