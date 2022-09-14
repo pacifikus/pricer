@@ -83,7 +83,9 @@ package PriceCalculator
     {
         class FlatHistoricalCovariance
         {
-            {static} +create(underlyings, observationDate: Date, market: Market)
+            -observationDate: Date
+            -historicalWindow: Date[2..*]
+            {static} +create(underlyings: String[1..*]{ordered}, observationDate: Date, historicalWindowSize: Real, market: QuoteProvider)
             +getTotalCovariance(forecastDate: Date)
         }
     }
@@ -97,7 +99,10 @@ package PriceCalculator
     {
         class IndexDiscountCurve
         {
-            {static} +create(valuationDate: Date, tenors, tickers, market: Market)
+            -valuationDate: Date
+            -rates: Real[1..*]
+            -durations: Real[1..*]
+            {static} +create(valuationDate: Date, tenors: String[1..*]{ordered}, tickers: String[1..*]{ordered}, market: QuoteProvider)
             +getDiscountFactor(paymentDate: Date)
         }
     }
@@ -121,7 +126,7 @@ package PriceCalculator
 
 
 GeometricBrownianMotion -up-|> Simulation
-GeometricBrownianMotion --> "drift" DiscountCurve
+GeometricBrownianMotion --> "drift 1..*" DiscountCurve
 GeometricBrownianMotion --> "covariance" Covariance
 IndexDiscountCurve -up-|> DiscountCurve
 FlatHistoricalCovariance -up-|> Covariance
@@ -132,7 +137,9 @@ SimulatedQuoteProvider --> "amendment" Simulation
 SimulationPricer -up--|> Pricer
 SimulationPricer --|> PricerFactory
 SimulationPricer --> QuoteProvider
+SimulationPricer --> "discountCurve" DiscountCurve
 SimulationPricer ..> IndexDiscountCurve
+SimulationPricer --> "impliedVolatilities" Covariance
 SimulationPricer ..> FlatHistoricalCovariance
 SimulationPricer --> Simulation
 SimulationPricer ..> SimulatedQuoteProvider
