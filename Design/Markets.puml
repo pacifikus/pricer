@@ -1,13 +1,13 @@
 @startuml
 hide circles
 
-!includesub PriceableElements.puml!QuoteProvider
+!includesub Products.puml!QuoteProvider
 
 
 !startsub FinamQuoteProvider
-package PriceCalculator
+package StructuredProductPricer
 {
-    package QuoteProviders
+    package Markets
     {
         class FinamQuoteProvider
         {
@@ -20,9 +20,9 @@ package PriceCalculator
 
 
 !startsub MoexGCurveQuoteProvider
-package PriceCalculator
+package StructuredProductPricer
 {
-    package QuoteProviders
+    package Markets
     {
         class MoexGCurveQuoteProvider
         {

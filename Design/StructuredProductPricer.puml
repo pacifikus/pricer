@@ -3,8 +3,8 @@ hide circles
 hide attributes
 hide methods
 
-!include PriceableElements.puml
-!include QuoteProviders.puml
+!include Products.puml
+!include Markets.puml
 !include Simulation.puml
 
 @enduml

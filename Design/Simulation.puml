@@ -1,13 +1,13 @@
 @startuml
 hide circles
 
-!includesub PriceableElements.puml!Pricer
-!includesub PriceableElements.puml!QuoteProvider
-!includesub PriceableElements.puml!PricerFactory
+!includesub Products.puml!Pricer
+!includesub Products.puml!QuoteProvider
+!includesub Products.puml!PricerFactory
 
 
 !startsub Simulation
-package PriceCalculator
+package StructuredProductPricer
 {
     package Simulation
     {
@@ -21,7 +21,7 @@ package PriceCalculator
 
 
 !startsub GeometricBrownianMotion
-package PriceCalculator
+package StructuredProductPricer
 {
     package Simulation
     {
@@ -36,7 +36,7 @@ package PriceCalculator
 
 
 !startsub SimulatedQuoteProvider
-package PriceCalculator
+package StructuredProductPricer
 {
     package Simulation
     {
@@ -51,7 +51,7 @@ package PriceCalculator
 
 
 !startsub CovarianceTermStructure
-package PriceCalculator
+package StructuredProductPricer
 {
     package Simulation
     {
@@ -65,7 +65,7 @@ package PriceCalculator
 
 
 !startsub DiscountCurve
-package PriceCalculator
+package StructuredProductPricer
 {
     package Simulation
     {
@@ -79,7 +79,7 @@ package PriceCalculator
 
 
 !startsub FlatHistoricalCovarianceForecast
-package PriceCalculator
+package StructuredProductPricer
 {
     package Simulation
     {
@@ -96,7 +96,7 @@ package PriceCalculator
 
 
 !startsub IndexDiscountCurve
-package PriceCalculator
+package StructuredProductPricer
 {
     package Simulation
     {
@@ -114,7 +114,7 @@ package PriceCalculator
 
 
 !startsub SimulationPricer
-package PriceCalculator
+package StructuredProductPricer
 {
     package Simulation
     {

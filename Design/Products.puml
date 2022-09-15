@@ -3,9 +3,9 @@ hide circles
 
 
 !startsub PriceableElement
-package PriceCalculator
+package StructuredProductPricer
 {
-    package PriceableElements
+    package Products
     {
         abstract class PriceableElement
         {
@@ -17,9 +17,9 @@ package PriceCalculator
 
 
 !startsub Derivative
-package PriceCalculator
+package StructuredProductPricer
 {
-    package PriceableElements
+    package Products
     {
         abstract class Derivative
         {
@@ -33,9 +33,9 @@ package PriceCalculator
 
 
 !startsub CashFlow
-package PriceCalculator
+package StructuredProductPricer
 {
-    package PriceableElements
+    package Products
     {
         abstract class CashFlow
         {
@@ -48,9 +48,9 @@ package PriceCalculator
 
 
 !startsub VanillaStructuredProduct
-package PriceCalculator
+package StructuredProductPricer
 {
-    package PriceableElements
+    package Products
     {
         class VanillaStructuredProduct
         {
@@ -69,9 +69,9 @@ package PriceCalculator
 
 
 !startsub Autocall
-package PriceCalculator
+package StructuredProductPricer
 {
-    package PriceableElements
+    package Products
     {
         class Autocall
         {
@@ -85,9 +85,9 @@ package PriceCalculator
 
 
 !startsub Pricer
-package PriceCalculator
+package StructuredProductPricer
 {
-    package PriceableElements
+    package Products
     {
         abstract class Pricer
         {
@@ -102,9 +102,9 @@ package PriceCalculator
 
 
 !startsub QuoteProvider
-package PriceCalculator
+package StructuredProductPricer
 {
-    package PriceableElements
+    package Products
     {
         abstract class QuoteProvider <<global>>
         {
@@ -116,9 +116,9 @@ package PriceCalculator
 
 
 !startsub PricerFactory
-package PriceCalculator
+package StructuredProductPricer
 {
-    package PriceableElements
+    package Products
     {
         abstract class PricerFactory
         {
