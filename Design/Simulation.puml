@@ -137,9 +137,7 @@ GeometricBrownianMotion -up-|> Simulation
 GeometricBrownianMotion --> "drift 1..*" DiscountCurve
 GeometricBrownianMotion --> "covariance" CovarianceTermStructure
 IndexDiscountCurve -up-|> DiscountCurve
-IndexDiscountCurve ..> QuoteProvider
 FlatHistoricalCovarianceForecast -up-|> CovarianceTermStructure
-FlatHistoricalCovarianceForecast ..> QuoteProvider
 SimulatedQuoteProvider -up--|> QuoteProvider
 SimulatedQuoteProvider -up--> "originalQuoteProvider" QuoteProvider
 SimulatedQuoteProvider --> "amendment" Simulation
@@ -148,7 +146,6 @@ SimulationPricer -up--|> PricerFactory
 SimulationPricer --> "discountCurve" DiscountCurve
 SimulationPricer --> "underlyingCovarianceForecast" CovarianceTermStructure
 SimulationPricer --> "implementation" Simulation
-SimulationPricer ..> QuoteProvider
 SimulationPricer ..> IndexDiscountCurve: create
 SimulationPricer ..> FlatHistoricalCovarianceForecast: create
 SimulationPricer ..> SimulatedQuoteProvider: create

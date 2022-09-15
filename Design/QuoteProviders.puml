@@ -34,7 +34,7 @@ package PriceCalculator
 !endsub
 
 
-FinamQuoteProvider -up-|> QuoteProvider
-MoexGCurveQuoteProvider -up-|> QuoteProvider
+FinamQuoteProvider -up--|> QuoteProvider
+MoexGCurveQuoteProvider -up--|> QuoteProvider
 
 @enduml

@@ -106,7 +106,7 @@ package PriceCalculator
 {
     package PriceableElements
     {
-        abstract class QuoteProvider
+        abstract class QuoteProvider <<global>>
         {
             {abstract} +getQuotes(ticker: String, observationDates: Date[1..*]{ordered}): Real[1..*]{ordered}
         }
