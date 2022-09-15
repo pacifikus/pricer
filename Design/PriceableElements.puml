@@ -16,21 +16,6 @@ package PriceCalculator
 !endsub
 
 
-!startsub CashFlow
-package PriceCalculator
-{
-    package PriceableElements
-    {
-        abstract class CashFlow
-        {
-            {abstract} +getPaymentDates(): Date[1..*]
-            {abstract} +getPaymentAmount(paymentDate: Date, market: QuoteProvider)
-        }
-    }
-}
-!endsub
-
-
 !startsub Derivative
 package PriceCalculator
 {
@@ -47,45 +32,15 @@ package PriceCalculator
 !endsub
 
 
-
-!startsub Pricer
+!startsub CashFlow
 package PriceCalculator
 {
     package PriceableElements
     {
-        abstract class Pricer
+        abstract class CashFlow
         {
-            {abstract} +getDiscountFactor(valuationDate: Date, maturityDate: Date)
-            {abstract} +getCallOptionBasePrice(underlying, strike, valuationDate: Date, maturityDate: Date)
-            {abstract} +getBasePrice(pricedElement: CashFlow, valuationDate: Date)
-        }
-    }
-}
-!endsub
-
-
-!startsub QuoteProvider
-package PriceCalculator
-{
-    package PriceableElements
-    {
-        abstract class QuoteProvider
-        {
-            {abstract} +getQuotes(ticker, observationDates: Date[1..*])
-        }
-    }
-}
-!endsub
-
-
-!startsub PricerFactory
-package PriceCalculator
-{
-    package PriceableElements
-    {
-        abstract class PricerFactory
-        {
-            {static} {abstract} +createPricer(underlyings, valuationDate: Date, market: QuoteProvider): Pricer
+            {abstract} +getPaymentDates(): Date[1..*]
+            {abstract} +getPaymentAmount(paymentDate: Date, market: QuoteProvider)
         }
     }
 }
@@ -123,6 +78,51 @@ package PriceCalculator
             +getPaymentDates(): Date[1..*]
             +getPaymentAmount(paymentDate: Date, market: QuoteProvider)
             +getBasePrice(valuationDate: Date, pricer: Pricer)
+        }
+    }
+}
+!endsub
+
+
+!startsub Pricer
+package PriceCalculator
+{
+    package PriceableElements
+    {
+        abstract class Pricer
+        {
+            {abstract} +getValuationDate(): Date
+            {abstract} +getDiscountFactor(paymentDate: Date): Real
+            {abstract} +getCallOptionBasePrice(underlying: String, strike: Real, maturityDate: Date): Real
+            {abstract} +getCashFlowBasePrice(pricedElement: CashFlow): Real
+        }
+    }
+}
+!endsub
+
+
+!startsub QuoteProvider
+package PriceCalculator
+{
+    package PriceableElements
+    {
+        abstract class QuoteProvider
+        {
+            {abstract} +getQuotes(ticker: String, observationDates: Date[1..*]{ordered}): Real[1..*]{ordered}
+        }
+    }
+}
+!endsub
+
+
+!startsub PricerFactory
+package PriceCalculator
+{
+    package PriceableElements
+    {
+        abstract class PricerFactory
+        {
+            {static} {abstract} +createPricer(valuationDate: Date, underlyings: String[1..*], market: QuoteProvider): Pricer
         }
     }
 }

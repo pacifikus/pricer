@@ -12,7 +12,7 @@ package PriceCalculator
         class FinamQuoteProvider
         {
             {static} +create()
-            +getQuotes(ticker, observationDates: Date[1..*])
+            +getQuotes(ticker: String, observationDates: Date[1..*]{ordered}): Real[1..*]{ordered}
         }
     }
 }
@@ -27,7 +27,7 @@ package PriceCalculator
         class MoexGCurveQuoteProvider
         {
             {static} +create()
-            +getQuotes(ticker, observationDates: Date[1..*])
+            +getQuotes(ticker: String, observationDates: Date[1..*]{ordered}): Real[1..*]{ordered}
         }
     }
 }

@@ -3,11 +3,8 @@ hide circles
 hide attributes
 hide methods
 
-hide Simulation
-hide QuoteProviders
-
-!include QuoteProviders.puml
 !include PriceableElements.puml
+!include QuoteProviders.puml
 !include Simulation.puml
 
 @enduml
