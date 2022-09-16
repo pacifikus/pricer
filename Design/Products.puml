@@ -133,6 +133,7 @@ PriceableElement ..> QuoteProvider
 Derivative --> "pricerCreator" PricerFactory: <<static>>
 Derivative -up-|> PriceableElement
 Derivative ..> Pricer
+CashFlow ..> QuoteProvider
 Pricer -up..> CashFlow
 VanillaStructuredProduct -up-|> CashFlow
 VanillaStructuredProduct -up-|> Derivative
