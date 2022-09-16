@@ -1,0 +1,146 @@
+@startuml
+hide circles
+
+
+!startsub PriceableElement
+package StructuredProductPricer
+{
+    package Products
+    {
+        abstract class PriceableElement
+        {
+            {abstract} +getPrice(valuationDate: Date, market: QuoteProvider)
+        }
+    }
+}
+!endsub
+
+
+!startsub Derivative
+package StructuredProductPricer
+{
+    package Products
+    {
+        abstract class Derivative
+        {
+            +getPrice(valuationDate: Date, market: QuoteProvider)
+            {abstract} +getBasePrice(valuationDate: Date, pricer: Pricer)
+            {static} +setPricerCreator(newPricerCreator: PricerFactory)
+        }
+    }
+}
+!endsub
+
+
+!startsub CashFlow
+package StructuredProductPricer
+{
+    package Products
+    {
+        abstract class CashFlow
+        {
+            {abstract} +getPaymentDates(): Date[1..*]
+            {abstract} +getPaymentAmount(paymentDate: Date, market: QuoteProvider)
+        }
+    }
+}
+!endsub
+
+
+!startsub VanillaStructuredProduct
+package StructuredProductPricer
+{
+    package Products
+    {
+        class VanillaStructuredProduct
+        {
+            -underlying: String
+            -participation: Real
+            -strike: Real
+            -maturityDate: Date
+            {static} +create(underlying: String, participation: Real, strike: Real, maturityDate: Date)
+            +getPaymentDates(): Date[1..*]
+            +getPaymentAmount(paymentDate: Date, market: QuoteProvider): Real
+            +getBasePrice(valuationDate: Date, pricer: Pricer): Real
+        }
+    }
+}
+!endsub
+
+
+!startsub Autocall
+package StructuredProductPricer
+{
+    package Products
+    {
+        class Autocall
+        {
+            +getPaymentDates(): Date[1..*]
+            +getPaymentAmount(paymentDate: Date, market: QuoteProvider)
+            +getBasePrice(valuationDate: Date, pricer: Pricer)
+        }
+    }
+}
+!endsub
+
+
+!startsub Pricer
+package StructuredProductPricer
+{
+    package Products
+    {
+        abstract class Pricer
+        {
+            {abstract} +getValuationDate(): Date
+            {abstract} +getDiscountFactor(paymentDate: Date): Real
+            {abstract} +getCallOptionBasePrice(underlying: String, strike: Real, maturityDate: Date): Real
+            {abstract} +getCashFlowBasePrice(pricedElement: CashFlow): Real
+        }
+    }
+}
+!endsub
+
+
+!startsub QuoteProvider
+package StructuredProductPricer
+{
+    package Products
+    {
+        abstract class QuoteProvider <<global>>
+        {
+            {abstract} +getQuotes(ticker: String, observationDates: Date[1..*]{ordered}): Real[1..*]{ordered}
+        }
+    }
+}
+!endsub
+
+
+!startsub PricerFactory
+package StructuredProductPricer
+{
+    package Products
+    {
+        abstract class PricerFactory
+        {
+            {static} {abstract} +createPricer(valuationDate: Date, underlyings: String[1..*], market: QuoteProvider): Pricer
+        }
+    }
+}
+!endsub
+
+
+PriceableElement ..> QuoteProvider
+Derivative --> "pricerCreator" PricerFactory: <<static>>
+Derivative -up-|> PriceableElement
+Derivative ..> Pricer
+CashFlow ..> QuoteProvider
+Pricer -up..> CashFlow
+VanillaStructuredProduct -up-|> CashFlow
+VanillaStructuredProduct -up-|> Derivative
+Autocall -up-|> CashFlow
+Autocall -up-|> Derivative
+PricerFactory ..> Pricer
+PricerFactory ..> QuoteProvider
+
+
+@enduml

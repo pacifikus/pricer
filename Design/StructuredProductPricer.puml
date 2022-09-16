@@ -1,0 +1,10 @@
+@startuml
+hide circles
+hide attributes
+hide methods
+
+!include Products.puml
+!include Markets.puml
+!include Simulation.puml
+
+@enduml

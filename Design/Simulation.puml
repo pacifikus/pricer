@@ -1,0 +1,154 @@
+@startuml
+hide circles
+
+!includesub Products.puml!Pricer
+!includesub Products.puml!QuoteProvider
+!includesub Products.puml!PricerFactory
+
+
+!startsub Simulation
+package StructuredProductPricer
+{
+    package Simulation
+    {
+        abstract class Simulation
+        {
+            {abstract} +getSimulatedValue(variableName: String, simulationDate: Date, simulationIndex: Integer): Real
+        }
+    }
+}
+!endsub
+
+
+!startsub GeometricBrownianMotion
+package StructuredProductPricer
+{
+    package Simulation
+    {
+        class GeometricBrownianMotion
+        {
+            {static} +create(variableNames: String[1..*], observationDate: Date, simulationDates: Date[1..*], initialValues[1..*], drift: DiscountCurve[1..*], covariance: CovarianceTermStructure)
+            +getSimulatedValue(variableName: String, simulationDate: Date, simulationIndex: Integer): Real
+        }
+    }
+}
+!endsub
+
+
+!startsub SimulatedQuoteProvider
+package StructuredProductPricer
+{
+    package Simulation
+    {
+        class SimulatedQuoteProvider
+        {
+            -simulationIndex
+            +getQuotes(ticker: String, observationDates: Date[1..*]{ordered}): Real[1..*]{ordered}
+        }
+    }
+}
+!endsub
+
+
+!startsub CovarianceTermStructure
+package StructuredProductPricer
+{
+    package Simulation
+    {
+        abstract class CovarianceTermStructure
+        {
+            {abstract} +getObservationDate(): Date
+            {abstract} +getTotalCovariance(forecastDate: Date)
+        }
+    }
+!endsub
+
+
+!startsub DiscountCurve
+package StructuredProductPricer
+{
+    package Simulation
+    {
+        abstract class DiscountCurve
+        {
+            {abstract} +getValuationDate(): Date
+            {abstract} +getDiscountFactor(paymentDate: Date): Real
+        }
+    }
+!endsub
+
+
+!startsub FlatHistoricalCovarianceForecast
+package StructuredProductPricer
+{
+    package Simulation
+    {
+        class FlatHistoricalCovarianceForecast
+        {
+            -observationDate: Date
+            -historicalWindow: Date[2..*]
+            {static} +create(underlyings: String[1..*]{ordered}, observationDate: Date, historicalWindowSize: Real, market: QuoteProvider)
+            +getObservationDate(): Date
+            +getTotalCovariance(forecastDate: Date)
+        }
+    }
+!endsub
+
+
+!startsub IndexDiscountCurve
+package StructuredProductPricer
+{
+    package Simulation
+    {
+        class IndexDiscountCurve
+        {
+            -valuationDate: Date
+            -rates: Real[1..*]
+            -durations: Real[1..*]
+            {static} +create(valuationDate: Date, tenors: String[1..*]{ordered}, tickers: String[1..*]{ordered}, market: QuoteProvider)
+            +getValuationDate(): Date
+            +getDiscountFactor(paymentDate: Date): Real
+        }
+    }
+!endsub
+
+
+!startsub SimulationPricer
+package StructuredProductPricer
+{
+    package Simulation
+    {
+        class SimulationPricer
+        {
+            -valuationDate: Date
+            {static} +createPricer(underlyings: String[1..*], market: QuoteProvider): Pricer
+            {static} +create(underlyings, valuationDate: Date, market: QuoteProvider)
+            +getValuationDate(): Date
+            +getDiscountFactor(paymentDate: Date): Real
+            +getCallOptionBasePrice(underlying: String, strike: Real, maturityDate: Date): Real
+            +getCashFlowBasePrice(pricedElement: CashFlow): Real
+        }
+    }
+}
+!endsub
+
+
+GeometricBrownianMotion -up-|> Simulation
+GeometricBrownianMotion --> "drift 1..*" DiscountCurve
+GeometricBrownianMotion --> "covariance" CovarianceTermStructure
+IndexDiscountCurve -up-|> DiscountCurve
+FlatHistoricalCovarianceForecast -up-|> CovarianceTermStructure
+SimulatedQuoteProvider -up--|> QuoteProvider
+SimulatedQuoteProvider -up--> "originalQuoteProvider" QuoteProvider
+SimulatedQuoteProvider --> "amendment" Simulation
+SimulationPricer -up--|> Pricer
+SimulationPricer -up--|> PricerFactory
+SimulationPricer --> "discountCurve" DiscountCurve
+SimulationPricer --> "underlyingCovarianceForecast" CovarianceTermStructure
+SimulationPricer --> "implementation" Simulation
+SimulationPricer ..> IndexDiscountCurve: create
+SimulationPricer ..> FlatHistoricalCovarianceForecast: create
+SimulationPricer ..> SimulatedQuoteProvider: create
+
+
+@enduml

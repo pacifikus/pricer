@@ -1,0 +1,40 @@
+@startuml
+hide circles
+
+!includesub Products.puml!QuoteProvider
+
+
+!startsub FinamQuoteProvider
+package StructuredProductPricer
+{
+    package Markets
+    {
+        class FinamQuoteProvider
+        {
+            {static} +create()
+            +getQuotes(ticker: String, observationDates: Date[1..*]{ordered}): Real[1..*]{ordered}
+        }
+    }
+}
+!endsub
+
+
+!startsub MoexGCurveQuoteProvider
+package StructuredProductPricer
+{
+    package Markets
+    {
+        class MoexGCurveQuoteProvider
+        {
+            {static} +create()
+            +getQuotes(ticker: String, observationDates: Date[1..*]{ordered}): Real[1..*]{ordered}
+        }
+    }
+}
+!endsub
+
+
+FinamQuoteProvider -up--|> QuoteProvider
+MoexGCurveQuoteProvider -up--|> QuoteProvider
+
+@enduml
