@@ -1,7 +1,7 @@
 ### Modules
 
-* Keep each class in a separate module with the same name. E.g.,
-  ``RiskFactor`` class must be in ``RiskFactor.py`` module.
+* In the usual case, keep each class in a separate module with the same name.
+  E.g., ``RiskFactor`` class must be exclusevly in ``RiskFactor.py`` module.
 
 ### Testing
 
@@ -10,6 +10,7 @@
 * Use one unit test class for each class under test.
 * Name a test class by adding 'Test' to the class under test name (e.g.,
   ``RiskFactorTest`` for ``RiskFactor`` class).
+* Place stub classes for a test in the same module before the test class.
 
 ### Typing
 
