@@ -170,17 +170,6 @@ be done in different languages, while design is practically not.
       )
   ```
 
-* When appropriate, use additional spaces to format matrix parameters
-  naturally:
-  ```
-  # Recommended:
-  numpy.array(
-      [[0, 0, 0.2],
-       [1, 1, 0.8],
-       [0, 1, 0.8],
-       [1, 0, 0.2]]
-  )
-
 ##### Naming
 
 * Names should make code to be readable like natural language:
