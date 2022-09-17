@@ -1,7 +1,7 @@
 ### Modules
 
 * In the usual case, keep each class in a separate module with the same name.
-  E.g., ``RiskFactor`` class must be exclusevly in ``RiskFactor.py`` module.
+  E.g., ``RiskFactor`` class must be exclusively in ``RiskFactor.py`` module.
 
 ### Testing
 
