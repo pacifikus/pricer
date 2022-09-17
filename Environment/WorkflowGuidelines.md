@@ -6,7 +6,7 @@ If you or your team are assigned a new issue, follow the instructions below.
 2. Set 'In progress' issue status.
 
 3. Commit and push changes required to the issue branch.
-    * Follow [CodeGuidelines](CodeGuidelines.md).
+    * Follow CodeGuidelines.
     * Write concise but [good commit messages](https://cbea.ms/git-commit/).
 
 4. Finalize the work:
