@@ -4,10 +4,10 @@ If you or your team are assigned a new issue, follow the instructions below.
     * [ ] Ensure that GitHub links the branch created to the issue.
 
 2. Set 'In progress' issue status.
- 
+
 3. Commit and push changes required to the issue branch.
-   * Follow [CodeGuidelines](CodeGuidelines.md).
-   * Write concise but [good commit messages](https://cbea.ms/git-commit/).
+    * Follow [CodeGuidelines](CodeGuidelines.md).
+    * Write concise but [good commit messages](https://cbea.ms/git-commit/).
 
 4. Finalize the work:
     * [ ] Resolve merge conflicts if any between the issue
@@ -28,7 +28,7 @@ If you or your team are assigned a new issue, follow the instructions below.
 7. If changes requested by a reviewer, repeat steps 2-6.
 
 8. When pull request is approved, merge the issue branch into ``master``.
-    * [ ] Create merge commit even if fast-forward is possible; 
+    * [ ] Create merge commit even if fast-forward is possible;
     * [ ] Provide detailed commit message.
         * [ ] Make commit message summary match the (updated) issue title.
         * [ ] Do not mention any issues or branch names in the merge commit
