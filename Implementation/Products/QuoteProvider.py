@@ -11,5 +11,4 @@ class QuoteProvider(ABC):
         ticker: str,
         observationDates: List[date]
     ) -> List[float]:
-        self.ticker = ticker
-        self.observationDates = observationDates
+        pass
