@@ -1,11 +1,12 @@
 from datetime import date
 from typing import List
 
+from Products.CashFlow import CashFlow
 from Products.Pricer import Pricer
 from Products.QuoteProvider import QuoteProvider
 
 
-class VanillaStructuredProduct:
+class VanillaStructuredProduct(CashFlow):
 
     def __init__(
         self,
