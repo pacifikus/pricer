@@ -1,12 +1,9 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from datetime import date
+from Products.CashFlow import CashFlow
 
 
-class CashFlow:
-    pass
-
-
-class Pricer(metaclass=ABCMeta):
+class Pricer(ABC):
     @abstractmethod
     def init(self):
         pass
