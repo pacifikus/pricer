@@ -12,4 +12,3 @@ class QuoteProvider(ABC):
         observationDates: List[date]
     ) -> List[float]:
         pass
-

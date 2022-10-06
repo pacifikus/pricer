@@ -1,8 +1,10 @@
-from datetime import date
+from abc import ABC, abstractmethod
 from datetime import date
 from typing import List
-from abc import ABC, abstractmethod
-import pandas
+
+import pandas as pd
+from Products.QuoteProvider import QuoteProvider
+
 
 class CashFlow(ABC):
     @abstractmethod
@@ -12,14 +14,15 @@ class CashFlow(ABC):
     @abstractmethod
     def getPaymentDates(self) -> List[date]:
         pass
-    
+
     @abstractmethod
     def getPaymentAmount(
         self,
         paymentDate: [date],
         market: QuoteProvider
-        ) -> float:
+    ) -> float:
         pass
+
 
 class test_cash_flow_class(CashFlow):
     def init(self):
@@ -34,25 +37,32 @@ class test_cash_flow_class(CashFlow):
         Product,
         paymentDate: [date],
         market: QuoteProvider
-        ) -> float:
+    ) -> float:
         self.Product = Product
-        return self.Product.getPaymentAmount(self.getPaymentDates(Product), market)
-    
+        return self.Product.getPaymentAmount(
+            self.getPaymentDates(Product),
+            market
+        )
+
     def getCashflow(
         self,
         Product,
         currentDate: [date],
         paymentDate: [date],
         market: QuoteProvider
-        ) -> pandas.Series:
+    ) -> pd.Series:
         self.Product = Product
-        flows = pandas.Series(self.getPaymentAmount(
-            Product,
-            self.getPaymentDates(Product),
-            market), 
+        flows = pd.Series(
+            self.getPaymentAmount(
+                Product,
+                self.getPaymentDates(Product),
+                market
+            ),
             index=self.getPaymentDates(Product), 
-            dtype=float)
+            dtype=float
+        )
         print(flows.index, currentDate)
         return flows[flows.index <= currentDate]
+
 
 Flow = test_cash_flow_class()

@@ -1,8 +1,8 @@
 from datetime import date
 from typing import List
 
-from Products.QuoteProvider import QuoteProvider
 from Products.Pricer import Pricer
+from Products.QuoteProvider import QuoteProvider
 
 
 class VanillaStructuredProduct:
