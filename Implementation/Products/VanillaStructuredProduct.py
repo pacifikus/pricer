@@ -35,7 +35,7 @@ class VanillaStructuredProduct(CashFlow):
         quotes = market.getQuotes(self.__underlying, [paymentDate])[0]
         profit = max(quotes - self.__strike, 0) / self.__strike
         if self.__cap and profit >= self.__profitZoneStart:
-            return 1.01 + self.__participation * self.__cap
+            return 1 + self.__participation * self.__cap
         else:
             return 1 + self.__participation * profit
 
