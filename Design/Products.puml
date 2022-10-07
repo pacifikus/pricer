@@ -58,6 +58,8 @@ package StructuredProductPricer
             -participation: Real
             -strike: Real
             -maturityDate: Date
+            -cap: Real
+            -capStrike: Real
             {static} +create(underlying: String, participation: Real, strike: Real, maturityDate: Date)
             +getPaymentDates(): Date[1..*]
             +getPaymentAmount(paymentDate: Date, market: QuoteProvider): Real
