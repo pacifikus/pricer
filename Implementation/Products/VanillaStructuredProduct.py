@@ -20,7 +20,9 @@ class VanillaStructuredProduct(CashFlow):
         self.__strike = strike
         self.__maturityDate = maturityDate
         self.__cap = cap
-        if self.__cap:
+        self.__capStrike = None
+
+        if self.__cap is not None:
             self.__capStrike = self.__strike * (
                 1 + self.__cap / self.__participation
             )
@@ -35,7 +37,7 @@ class VanillaStructuredProduct(CashFlow):
     ) -> float:
         underlyingQuote = market.getQuotes(self.__underlying, [paymentDate])[0]
         upside = max(underlyingQuote - self.__strike, 0) / self.__strike
-        if self.__cap and self.__strike * (1 + upside) >= self.__capStrike:
+        if self.__cap and underlyingQuote >= self.__capStrike:
             return 1 + self.__participation * self.__cap
         else:
             return 1 + self.__participation * upside
