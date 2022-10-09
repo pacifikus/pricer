@@ -160,7 +160,7 @@ SimulationPricer -up--> "originalMarket" QuoteProvider
 SimulationPricer --> "discountCurve" DiscountCurve
 SimulationPricer --> "underlyingCovarianceForecast" CovarianceTermStructure
 SimulationPricer --> "implementation" Simulation
-SimulationPricerFactory ..> SimulationPricer
+SimulationPricerFactory ..> SimulationPricer: create
 SimulationPricerFactory ..> IndexDiscountCurve: create
 SimulationPricerFactory ..> FlatHistoricalCovarianceForecast: create
 SimulationPricer ..> SimulatedQuoteProvider: create
