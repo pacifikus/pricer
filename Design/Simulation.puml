@@ -121,7 +121,7 @@ package StructuredProductPricer
         class SimulationPricer
         {
             -valuationDate: Date
-            {static} +create(underlyings, valuationDate: Date, drift: DiscountCurve[1..*], covariance: CovarianceTermStructure)
+            {static} +create(underlyings, valuationDate: Date, originalMarket: QuoteProvider, drift: DiscountCurve[1..*], covariance: CovarianceTermStructure)
             +getValuationDate(): Date
             +getDiscountFactor(paymentDate: Date): Real
             +getCallOptionBasePrice(underlying: String, strike: Real, maturityDate: Date): Real
@@ -156,6 +156,7 @@ SimulatedQuoteProvider -up--> "originalQuoteProvider" QuoteProvider
 SimulatedQuoteProvider --> "amendment" Simulation
 SimulationPricer -up--|> Pricer
 SimulationPricerFactory -up--|> PricerFactory
+SimulationPricer -up--> "originalMarket" QuoteProvider
 SimulationPricer --> "discountCurve" DiscountCurve
 SimulationPricer --> "underlyingCovarianceForecast" CovarianceTermStructure
 SimulationPricer --> "implementation" Simulation
