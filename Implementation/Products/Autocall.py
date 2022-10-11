@@ -55,11 +55,11 @@ class Autocall:
         index = self.findDateIndex(paymentDate)
         underlyingQuotes = [[market.getQuotes(x, self.__couponDates[y]) / market.getQuotes(x, self.__couponDates[0]) for x in self.__underlyingAssets] for y in range(index+1)]
         
-        tempMin = self.findMinInUnderlyings(underlyingQuotes[i])
-        tempLocalMax = self.findMaxInUnderlyings(underlyingQuotes[i])
-        tempMax = self.findGlobalMax(underlyingQuotes[:-1])
+        currentMin = min(underlyingQuotes[i])
+        mins = [min(underlyingQuotes[j]) for j in range(i)]
+        tempMax = max(mins)
 
-        if tempMin >= self.__CB and tempLocalMax <= self.__AB and tempMax <= self.__AB:
+        if currentMin >= self.__CB and currentMin < self.__AB and tempMax < self.__AB:
             return self.__annulizedCouponLevel
         else:
             return 0
@@ -69,10 +69,11 @@ class Autocall:
         i = self.findDateIndex(paymentDate)
         underlyingQuotes = [[market.getQuotes(x, self.__couponDates[y]) / market.getQuotes(x, self.__couponDates[0]) for x in self.__underlyingAssets] for y in range(index+1)]
         
-        tempMin = self.findMinInUnderlyings(underlyingQuotes[i])
-        tempMax = self.findGlobalMax(underlyingQuotes[:-1])
+        currentMin = min(underlyingQuotes[i])
+        mins = [min(underlyingQuotes[j]) for j in range(i)]
+        tempMax = max(mins)
 
-        if tempMin >= self.__AB and tempMax <= self.__AB:
+        if currentMin >= self.__AB and tempMax < self.__AB:
             return 1
         else:
             return 0
