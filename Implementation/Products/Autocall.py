@@ -36,20 +36,6 @@ class Autocall:
                 index = i
         return index
     
-    def findMinInUnderlyings(self, quotes: List[float]) -> float:
-        return min(quotes)
-    
-    def findMaxInUnderlyings(self, quotes: List[float]) -> float:
-        return max(quotes)
-    
-    def findGlobalMax(self, quotes: List[List[float]]) -> float:
-        max = quotes[0][0]
-        for i in range(len(quotes)):
-            for j in range(len(quotes[i])):
-                if max < quotes[i][j]:
-                    max = quotes[i][j]
-        return max
-    
   
     def coupon(self, paymentDate: date, market:QuoteProvider) -> float:
         index = self.findDateIndex(paymentDate)
