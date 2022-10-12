@@ -43,7 +43,7 @@ class VanillaStructuredProductTest(TestCase):
                 [date(2022, 9, 1)],
                 self.__testedUncappedProduct.getPaymentDates()
             )
-            
+
         with self.subTest('Failed: testInTheMoneyPayoff'):
             # Testing testInTheMoneyPayoff
             self.assertEqual(
