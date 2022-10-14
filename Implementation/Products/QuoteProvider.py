@@ -4,11 +4,6 @@ from typing import List
 
 
 class QuoteProvider(ABC):
-
     @abstractmethod
-    def getQuotes(
-        self,
-        ticker: str,
-        observationDates: List[date]
-    ) -> List[float]:
+    def getQuotes(self, ticker: str, observationDates: List[date]) -> List[float]:
         pass

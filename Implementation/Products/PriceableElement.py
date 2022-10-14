@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import date
+
 from QuoteProvider import QuoteProvider
 
 

@@ -21,11 +21,7 @@ class QuoteProviderStub(QuoteProvider):
     def __init__(self, value: float):
         self.__value = value
 
-    def getQuotes(
-        self,
-        ticker: str,
-        observationDates: List[date]
-    ) -> List[float]:
+    def getQuotes(self, ticker: str, observationDates: List[date]) -> List[float]:
 
         if ticker == "GAZP" and observationDates == [date(2022, 9, 1)]:
             return [self.__value]
@@ -40,7 +36,6 @@ class DiscountCurveStub(DiscountCurve):
     def getDiscountFactor(self, paymentDate) -> float:
         rate = 0.1
         if paymentDate == date(2022, 9, 1):
-            a = exp(-rate * 30)
             return exp(-rate * 30 / 365)
         else:
             raise NotImplementedError()
@@ -49,11 +44,11 @@ class DiscountCurveStub(DiscountCurve):
 class SimulationPricerTest(TestCase):
     def setUp(self) -> None:
         self.__testedPricer = SimulationPricer(
-            underlyings=['GAZP'],
+            underlyings=["GAZP"],
             covariance=CovarianceTermStructureStub(),
             valuationDate=date(2022, 9, 1),
             originalMarket=QuoteProviderStub(250),
-            drift=DiscountCurveStub()
+            drift=DiscountCurveStub(),
         )
 
     def testValuationDate(self):
@@ -66,13 +61,12 @@ class SimulationPricerTest(TestCase):
         rate = 0.1
         date_ = date(2022, 9, 1)
         self.assertEqual(
-            self.__testedPricer.getDiscountFactor(date_),
-            exp(-rate * 30 / 365)
+            self.__testedPricer.getDiscountFactor(date_), exp(-rate * 30 / 365)
         )
 
     def testCallOptionBasePriceInTheMoneyPayoff(self):
         result = self.__testedPricer.getCallOptionBasePrice(
-            underlying='GAZP',
+            underlying="GAZP",
             strike=200,
             maturityDate=date(2022, 10, 1),
         )
@@ -81,7 +75,7 @@ class SimulationPricerTest(TestCase):
 
     def testCallOptionBasePriceOutOfTheMoneyPayoff(self):
         result = self.__testedPricer.getCallOptionBasePrice(
-            underlying='GAZP',
+            underlying="GAZP",
             strike=300,
             maturityDate=date(2022, 10, 1),
         )
@@ -90,7 +84,7 @@ class SimulationPricerTest(TestCase):
 
     def testCallOptionBasePriceAtTheMoneyPayoff(self):
         result = self.__testedPricer.getCallOptionBasePrice(
-            underlying='GAZP',
+            underlying="GAZP",
             strike=250,
             maturityDate=date(2022, 10, 1),
         )

@@ -11,9 +11,5 @@ class CashFlow(ABC):
         pass
 
     @abstractmethod
-    def getPaymentAmount(
-        self,
-        paymentDate: date,
-        market: QuoteProvider
-    ) -> float:
+    def getPaymentAmount(self, paymentDate: date, market: QuoteProvider) -> float:
         pass

@@ -2,9 +2,9 @@ from datetime import date
 from typing import List, Optional
 
 from Products.CashFlow import CashFlow
+from Products.Derivative import Derivative
 from Products.Pricer import Pricer
 from Products.QuoteProvider import QuoteProvider
-from Products.Derivative import Derivative
 
 
 class VanillaStructuredProduct(CashFlow, Derivative):
@@ -24,9 +24,7 @@ class VanillaStructuredProduct(CashFlow, Derivative):
         self.__capStrike = None
 
         if self.__cap is not None:
-            self.__capStrike = self.__strike * (
-                1 + self.__cap / self.__participation
-            )
+            self.__capStrike = self.__strike * (1 + self.__cap / self.__participation)
 
     def getPaymentDates(self) -> List[date]:
         return [self.__maturityDate]
@@ -52,4 +50,3 @@ class VanillaStructuredProduct(CashFlow, Derivative):
 
     def getPrice(self, valuationDate: date, market: QuoteProvider) -> float:
         pass
-

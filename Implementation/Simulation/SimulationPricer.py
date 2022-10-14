@@ -1,12 +1,11 @@
 from datetime import date
-from typing import List
-
 from math import log
-from scipy.stats import norm
+from typing import List
 
 from Products.CashFlow import CashFlow
 from Products.Pricer import Pricer
 from Products.QuoteProvider import QuoteProvider
+from scipy.stats import norm
 from Simulation.CovarianceTermStructure import CovarianceTermStructure
 from Simulation.DiscountCurve import DiscountCurve
 
@@ -18,7 +17,7 @@ class SimulationPricer(Pricer):
         valuationDate: date,
         originalMarket: QuoteProvider,
         drift: DiscountCurve,
-        covariance: CovarianceTermStructure
+        covariance: CovarianceTermStructure,
     ):
         self.__underlyings = underlyings
         self.__valuationDate = valuationDate
@@ -30,20 +29,16 @@ class SimulationPricer(Pricer):
         return self.__drift.getDiscountFactor(paymentDate)
 
     def getCallOptionBasePrice(
-        self,
-        underlying: str,
-        strike: float,
-        maturityDate: date
+        self, underlying: str, strike: float, maturityDate: date
     ) -> float:
         sigma_T = self.__covariance.getTotalCovariance(maturityDate)
         S_t = self.__originalMarket.getQuotes(
-            ticker=underlying,
-            observationDates=[self.__valuationDate]
+            ticker=underlying, observationDates=[self.__valuationDate]
         )[0]
         B_t = self.getDiscountFactor(self.__valuationDate)
         F_t = S_t / B_t
         K = strike
-        d_1 = log((F_t / K) + (sigma_T ** 2) / 2) / sigma_T
+        d_1 = log((F_t / K) + (sigma_T**2) / 2) / sigma_T
         d_2 = d_1 - sigma_T
         N_1 = norm.cdf(d_1)
         N_2 = norm.cdf(d_2)

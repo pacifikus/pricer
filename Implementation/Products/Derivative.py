@@ -1,11 +1,10 @@
+from abc import ABC, abstractmethod
 from datetime import date
 
 from PriceableElement import PriceableElement
-from abc import ABC, abstractmethod
-
-from Products.QuoteProvider import QuoteProvider
 from Products.Pricer import Pricer
 from Products.PricerFactory import PricerFactory
+from Products.QuoteProvider import QuoteProvider
 
 
 class Derivative(PriceableElement, ABC):
