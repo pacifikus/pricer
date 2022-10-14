@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import date
 
-from PriceableElement import PriceableElement
+from Products.PriceableElement import PriceableElement
 from Products.Pricer import Pricer
 from Products.PricerFactory import PricerFactory
 from Products.QuoteProvider import QuoteProvider
