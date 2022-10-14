@@ -4,9 +4,10 @@ from typing import List, Optional
 from Products.CashFlow import CashFlow
 from Products.Pricer import Pricer
 from Products.QuoteProvider import QuoteProvider
+from Products.Derivative import Derivative
 
 
-class VanillaStructuredProduct(CashFlow):
+class VanillaStructuredProduct(CashFlow, Derivative):
     def __init__(
         self,
         underlying: str,
@@ -43,4 +44,12 @@ class VanillaStructuredProduct(CashFlow):
             return 1 + self.__participation * upside
 
     def getBasePrice(self, valuationDate: date, pricer: Pricer) -> float:
+        return pricer.getCallOptionBasePrice(
+            self.__underlying,
+            self.__strike,
+            valuationDate,
+        )
+
+    def getPrice(self, valuationDate: date, market: QuoteProvider) -> float:
         pass
+
