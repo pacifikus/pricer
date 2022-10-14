@@ -16,17 +16,17 @@ class SimulationPricer(Pricer):
         underlyings: List[str],
         valuationDate: date,
         originalMarket: QuoteProvider,
-        drift: DiscountCurve,
+        discountCurve: DiscountCurve,
         covariance: CovarianceTermStructure,
     ):
         self.__underlyings = underlyings
         self.__valuationDate = valuationDate
         self.__originalMarket = originalMarket
-        self.__drift = drift
+        self.__discountCurve = discountCurve
         self.__covariance = covariance
 
     def getDiscountFactor(self, paymentDate: date) -> float:
-        return self.__drift.getDiscountFactor(paymentDate)
+        return self.__discountCurve.getDiscountFactor(paymentDate)
 
     def getCallOptionBasePrice(
         self, underlying: str, strike: float, maturityDate: date
@@ -48,4 +48,4 @@ class SimulationPricer(Pricer):
         pass
 
     def getValuationDate(self) -> date:
-        return self.__drift.getValuationDate()
+        return self.__valuationDate

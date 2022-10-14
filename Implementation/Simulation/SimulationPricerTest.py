@@ -48,7 +48,7 @@ class SimulationPricerTest(TestCase):
             covariance=CovarianceTermStructureStub(),
             valuationDate=date(2022, 9, 1),
             originalMarket=QuoteProviderStub(250),
-            drift=DiscountCurveStub(),
+            discountCurve=DiscountCurveStub(),
         )
 
     def testValuationDate(self):
