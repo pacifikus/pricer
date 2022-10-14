@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import date
 
-from QuoteProvider import QuoteProvider
+from Products.QuoteProvider import QuoteProvider
 
 
 class PriceableElement(ABC):
