@@ -24,7 +24,8 @@ class VanillaStructuredProduct(CashFlow, Derivative):
         self.__capStrike = None
 
         if self.__cap is not None:
-            self.__capStrike = self.__strike * (1 + self.__cap / self.__participation)
+            self.__capStrike = self.__strike * (
+                    1 + self.__cap / self.__participation)
 
     def getPaymentDates(self) -> List[date]:
         return [self.__maturityDate]
@@ -42,11 +43,10 @@ class VanillaStructuredProduct(CashFlow, Derivative):
             return 1 + self.__participation * upside
 
     def getBasePrice(self, valuationDate: date, pricer: Pricer) -> float:
-        return pricer.getCallOptionBasePrice(
+        strike = self.__capStrike if self.__cap else self.__strike
+        callOptionBasePrice = pricer.getCallOptionBasePrice(
             self.__underlying,
-            self.__strike,
+            strike,
             valuationDate,
         )
-
-    def getPrice(self, valuationDate: date, market: QuoteProvider) -> float:
-        pass
+        return callOptionBasePrice + 1
