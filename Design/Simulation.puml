@@ -58,7 +58,7 @@ package StructuredProductPricer
         abstract class CovarianceTermStructure
         {
             {abstract} +getObservationDate(): Date
-            {abstract} +getTotalCovariance(forecastDate: Date)
+            {abstract} +getTotalCovariance(forecastDate: Date): Matrix
         }
     }
 !endsub
@@ -89,7 +89,7 @@ package StructuredProductPricer
             -historicalWindow: Date[2..*]
             {static} +create(underlyings: String[1..*]{ordered}, observationDate: Date, historicalWindowSize: Real, market: QuoteProvider)
             +getObservationDate(): Date
-            +getTotalCovariance(forecastDate: Date)
+            +getTotalCovariance(forecastDate: Date): Matrix
         }
     }
 !endsub
