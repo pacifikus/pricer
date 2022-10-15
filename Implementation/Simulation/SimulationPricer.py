@@ -31,18 +31,19 @@ class SimulationPricer(Pricer):
     def getCallOptionBasePrice(
         self, underlying: str, strike: float, maturityDate: date
     ) -> float:
-        sigma_T = self.__covariance.getTotalCovariance(maturityDate)
-        S_t = self.__originalMarket.getQuotes(
+        totalVariance = self.__covariance.getTotalCovariance(maturityDate)
+        spotPrice = self.__originalMarket.getQuotes(
             ticker=underlying, observationDates=[self.__valuationDate]
         )[0]
-        B_t = self.getDiscountFactor(self.__valuationDate)
-        F_t = S_t / B_t
-        K = strike
-        d_1 = log((F_t / K) + (sigma_T**2) / 2) / sigma_T
-        d_2 = d_1 - sigma_T
+        discountFactor = self.getDiscountFactor(self.__valuationDate)
+        forwardPrice = spotPrice / discountFactor
+        d_1 = log(
+            (forwardPrice / strike) + (totalVariance ** 2) / 2
+        ) / totalVariance
+        d_2 = d_1 - totalVariance
         N_1 = norm.cdf(d_1)
         N_2 = norm.cdf(d_2)
-        return B_t * (F_t * N_1 - K * N_2)
+        return discountFactor * (forwardPrice * N_1 - strike * N_2)
 
     def getCashFlowBasePrice(self, pricedElement: CashFlow) -> float:
         pass
