@@ -1,5 +1,5 @@
 from datetime import date
-from math import log
+from math import log, sqrt
 from typing import List
 
 from Products.CashFlow import CashFlow
@@ -31,16 +31,19 @@ class SimulationPricer(Pricer):
     def getCallOptionBasePrice(
         self, underlying: str, strike: float, maturityDate: date
     ) -> float:
-        totalVariance = self.__covariance.getTotalCovariance(maturityDate)
+        idx = self.__underlyings[underlying]
+        totalCovariance = self.__covariance.getTotalCovariance(maturityDate)
+        totalVariance = totalCovariance[idx, idx]
         spotPrice = self.__originalMarket.getQuotes(
-            ticker=underlying, observationDates=[self.__valuationDate]
+            ticker=underlying,
+            observationDates=[self.__valuationDate],
         )[0]
         discountFactor = self.getDiscountFactor(self.__valuationDate)
         forwardPrice = spotPrice / discountFactor
         d_1 = log(
-            (forwardPrice / strike) + (totalVariance ** 2) / 2
-        ) / totalVariance
-        d_2 = d_1 - totalVariance
+            (forwardPrice / strike) + totalVariance / 2
+        ) / sqrt(totalVariance)
+        d_2 = d_1 - sqrt(totalVariance)
         N_1 = norm.cdf(d_1)
         N_2 = norm.cdf(d_2)
         return discountFactor * (forwardPrice * N_1 - strike * N_2)
