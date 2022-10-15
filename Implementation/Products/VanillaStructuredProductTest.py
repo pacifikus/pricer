@@ -23,29 +23,34 @@ class QuoteProviderStub(QuoteProvider):
 
 
 class VanillaStructuredProductTest(TestCase):
+    def setUp(self) -> None:
+        self.__testedUncappedProduct = VanillaStructuredProduct(
+            underlying="GAZP",
+            participation=0.65,
+            strike=250,
+            maturityDate=date(2022, 9, 1),
+        )
+        self.__testedСappedProduct = VanillaStructuredProduct(
+            underlying="GAZP",
+            participation=0.5,
+            strike=250,
+            maturityDate=date(2022, 9, 1),
+            cap=0.08,
+        )
+
+    def testPaymentDates(self):
+        self.assertEqual(
+            [date(2022, 9, 1)],
+            self.__testedUncappedProduct.getPaymentDates()
+        )
+        
     def testUncappedPayoff(self):
-        with self.subTest('setUp'):
-            # Testing seUp of UncappedProduct
-            self.__testedUncappedProduct = VanillaStructuredProduct(
-                underlying="GAZP",
-                participation=0.65,
-                strike=250,
-                maturityDate=date(2022, 9, 1),
-            )
-
-        with self.subTest('Payment dates'):
-            # Testing testPaymentDates
-            self.assertEqual(
-                [date(2022, 9, 1)],
-                self.__testedUncappedProduct.getPaymentDates()
-            )
-
-        for underlyingQuote, expectedResult, TestCase in [
+        for underlyingQuote, expectedResult, testCase in [
             (260, 1 + 0.65 * 10 / 250, "In the money"),
             (250, 1, "At the money"),
             (230, 1, "Out of the money"),
         ]:
-            with self.subTest(TestCase):
+            with self.subTest(testCase):
                 self.assertEqual(
                     expectedResult,
                     self.__testedUncappedProduct.getPaymentAmount(
@@ -55,24 +60,14 @@ class VanillaStructuredProductTest(TestCase):
                 )
         
     def testCappedPayoff(self):
-        with self.subTest('setUp'):
-            # Testing setUp of СappedProduct
-            self.__testedСappedProduct = VanillaStructuredProduct(
-                underlying="GAZP",
-                participation=0.5,
-                strike=250,
-                maturityDate=date(2022, 9, 1),
-                cap=0.08,
-            )
-
-        for underlyingQuote, expectedResult, TestCase in [
+        for underlyingQuote, expectedResult, testCase in [
             (250, 1, "At the money, with cap"),
             (230, 1, "Out of the money, with cap"),
             (290, 1 + 0.5 * 0.08, "In the money, strike price"),
             (300, 1 + 0.5 * 0.08, "In the money, with cap capped"),
             (260, 1 + 0.5 * 10 / 250, "In the money, with cap non capped"),
         ]:
-            with self.subTest(TestCase):
+            with self.subTest(testCase):
                 self.assertEqual(
                     expectedResult,
                     self.__testedСappedProduct.getPaymentAmount(
