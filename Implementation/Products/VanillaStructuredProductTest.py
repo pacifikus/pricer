@@ -24,7 +24,7 @@ class QuoteProviderStub(QuoteProvider):
 
 class VanillaStructuredProductTest(TestCase):
     def testUncappedPayoff(self):
-        with self.subTest('Failed: setUp'):
+        with self.subTest('setUp'):
             # Testing seUp of UncappedProduct
             self.__testedUncappedProduct = VanillaStructuredProduct(
                 underlying="GAZP",
@@ -33,20 +33,19 @@ class VanillaStructuredProductTest(TestCase):
                 maturityDate=date(2022, 9, 1),
             )
 
-        with self.subTest('Failed: testPaymentDates'):
+        with self.subTest('Payment dates'):
             # Testing testPaymentDates
             self.assertEqual(
                 [date(2022, 9, 1)],
                 self.__testedUncappedProduct.getPaymentDates()
             )
 
-        for underlyingQuote, expectedResult, test_case in [
-            (260, 1 + 0.65 * 10 / 250, "testInTheMoneyPayoff"),
-            (250, 1, "testAtTheMoneyPayoff"),
-            (230, 1, "testOutOfTheMoneyPayoff"),
+        for underlyingQuote, expectedResult, TestCase in [
+            (260, 1 + 0.65 * 10 / 250, "In the money"),
+            (250, 1, "At the money"),
+            (230, 1, "Out of the money"),
         ]:
-            with self.subTest('Failed:', test_case):
-                # Testing testInTheMoneyPayoff
+            with self.subTest(TestCase):
                 self.assertEqual(
                     expectedResult,
                     self.__testedUncappedProduct.getPaymentAmount(
@@ -56,7 +55,7 @@ class VanillaStructuredProductTest(TestCase):
                 )
         
     def testCappedPayoff(self):
-        with self.subTest('Failed: setUp'):
+        with self.subTest('setUp'):
             # Testing setUp of СappedProduct
             self.__testedСappedProduct = VanillaStructuredProduct(
                 underlying="GAZP",
@@ -66,14 +65,14 @@ class VanillaStructuredProductTest(TestCase):
                 cap=0.08,
             )
 
-        for underlyingQuote, expectedResult, test_case in [
-            (250, 1, "testAtTheMoneyPayoffWithCap"),
-            (230, 1, "testOutOfTheMoneyPayoffWithCap"),
-            (290, 1 + 0.5 * 0.08, "testInTheMoneyPayoffWithCapCappedStrikePrice"),
-            (300, 1 + 0.5 * 0.08, "testInTheMoneyPayoffWithCapCapped"),
-            (260, 1 + 0.5 * 10 / 250, "testInTheMoneyPayoffWithCapNonCapped")
+        for underlyingQuote, expectedResult, TestCase in [
+            (250, 1, "At the money, with cap"),
+            (230, 1, "Out of the money, with cap"),
+            (290, 1 + 0.5 * 0.08, "In the money, strike price"),
+            (300, 1 + 0.5 * 0.08, "In the money, with cap capped"),
+            (260, 1 + 0.5 * 10 / 250, "In the money, with cap non capped"),
         ]:
-            with self.subTest('Failed:', test_case):
+            with self.subTest(TestCase):
                 self.assertEqual(
                     expectedResult,
                     self.__testedСappedProduct.getPaymentAmount(
