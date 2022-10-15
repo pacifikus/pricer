@@ -43,83 +43,35 @@ class VanillaStructuredProductTest(TestCase):
             [date(2022, 9, 1)],
             self.__testedUncappedProduct.getPaymentDates()
         )
-
-    def testInTheMoneyPayoff(self):
-        sampleMarket = QuoteProviderStub(260)
-        self.assertEqual(
-            1 + 0.65 * 10 / 250,
-            self.__testedUncappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
-
-    def testOutOfTheMoneyPayoff(self):
-        sampleMarket = QuoteProviderStub(230)
-        self.assertEqual(
-            1,
-            self.__testedUncappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
-
-    def testAtTheMoneyPayoff(self):
-        sampleMarket = QuoteProviderStub(250)
-        self.assertEqual(
-            1,
-            self.__testedUncappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
-
-    def testInTheMoneyPayoffWithCapNonCapped(self):
-        sampleMarket = QuoteProviderStub(260)
-        self.assertEqual(
-            1 + 0.5 * 10 / 250,
-            self.__testedСappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
-
-    def testInTheMoneyPayoffWithCapCapped(self):
-        sampleMarket = QuoteProviderStub(300)
-        self.assertEqual(
-            1 + 0.5 * 0.08,
-            self.__testedСappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
-
-    def testInTheMoneyPayoffWithCapCappedStrikePrice(self):
-        sampleMarket = QuoteProviderStub(290)
-        self.assertEqual(
-            1 + 0.5 * 0.08,
-            self.__testedСappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
-
-    def testOutOfTheMoneyPayoffWithCap(self):
-        sampleMarket = QuoteProviderStub(230)
-        self.assertEqual(
-            1,
-            self.__testedСappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
-
-    def testAtTheMoneyPayoffWithCap(self):
-        sampleMarket = QuoteProviderStub(250)
-        self.assertEqual(
-            1,
-            self.__testedСappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
+        
+    def testUncappedPayoff(self):
+        for underlyingQuote, expectedResult, testCase in [
+            (260, 1 + 0.65 * 10 / 250, "In the money"),
+            (250, 1, "At the money"),
+            (230, 1, "Out of the money"),
+        ]:
+            with self.subTest(testCase):
+                self.assertEqual(
+                    expectedResult,
+                    self.__testedUncappedProduct.getPaymentAmount(
+                        date(2022, 9, 1),
+                        QuoteProviderStub(underlyingQuote)
+                    ),
+                )
+        
+    def testCappedPayoff(self):
+        for underlyingQuote, expectedResult, testCase in [
+            (250, 1, "At the money, with cap"),
+            (230, 1, "Out of the money, with cap"),
+            (290, 1 + 0.5 * 0.08, "In the money, strike price"),
+            (300, 1 + 0.5 * 0.08, "In the money, with cap capped"),
+            (260, 1 + 0.5 * 10 / 250, "In the money, with cap non capped"),
+        ]:
+            with self.subTest(testCase):
+                self.assertEqual(
+                    expectedResult,
+                    self.__testedСappedProduct.getPaymentAmount(
+                        date(2022, 9, 1),
+                        QuoteProviderStub(underlyingQuote)
+                    ),
+                )
