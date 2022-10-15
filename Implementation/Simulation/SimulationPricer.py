@@ -31,7 +31,7 @@ class SimulationPricer(Pricer):
     def getCallOptionBasePrice(
         self, underlying: str, strike: float, maturityDate: date
     ) -> float:
-        idx = self.__underlyings[underlying]
+        idx = self.__underlyings.index(underlying)
         totalCovariance = self.__covariance.getTotalCovariance(maturityDate)
         totalVariance = totalCovariance[idx, idx]
         spotPrice = self.__originalMarket.getQuotes(

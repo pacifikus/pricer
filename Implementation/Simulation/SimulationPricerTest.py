@@ -32,7 +32,7 @@ class SimulationPricerTest(TestCase):
     def setUp(self, mockCovarianceTermStructure, mockDiscountCurve) -> None:
         mockCovarianceTermStructure = mockCovarianceTermStructure
         mockCovarianceTermStructure.getTotalCovariance.return_value = \
-            np.array([0.01])
+            np.array([[0.01]])
         rate = 0.1
         self.__mockDiscountCurve = mockDiscountCurve
         self.__mockDiscountCurve.getDiscountFactor.return_value = exp(
