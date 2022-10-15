@@ -19,4 +19,4 @@ class Derivative(PriceableElement, ABC):
 
     @staticmethod
     def setPricerCreator(newPricerCreator: PricerFactory):
-        pricer = newPricerCreator.createPricer()
+        Derivative.pricer = newPricerCreator.createPricer()
