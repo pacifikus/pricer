@@ -9,6 +9,9 @@ from Products.QuoteProvider import QuoteProvider
 class PricerFactory(ABC):
     @abstractmethod
     def createPricer(
-        self, valuationDate: date, underlyings: List[str], marker: QuoteProvider
+        self,
+        valuationDate: date,
+        underlyings: List[str],
+        marker: QuoteProvider,
     ) -> Pricer:
         pass

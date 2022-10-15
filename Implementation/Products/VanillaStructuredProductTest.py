@@ -10,7 +10,11 @@ class QuoteProviderStub(QuoteProvider):
     def __init__(self, value: float):
         self.__value = value
 
-    def getQuotes(self, ticker: str, observationDates: List[date]) -> List[float]:
+    def getQuotes(
+        self,
+        ticker: str,
+        observationDates: List[date],
+    ) -> List[float]:
 
         if ticker == "GAZP" and observationDates == [date(2022, 9, 1)]:
             return [self.__value]
@@ -70,33 +74,48 @@ class VanillaStructuredProductTest(TestCase):
         sampleMarket = QuoteProviderStub(260)
         self.assertEqual(
             1 + 0.5 * 10 / 250,
-            self.__testedСappedProduct.getPaymentAmount(date(2022, 9, 1), sampleMarket),
+            self.__testedСappedProduct.getPaymentAmount(
+                date(2022, 9, 1),
+                sampleMarket
+            ),
         )
 
     def testInTheMoneyPayoffWithCapCapped(self):
         sampleMarket = QuoteProviderStub(300)
         self.assertEqual(
             1 + 0.5 * 0.08,
-            self.__testedСappedProduct.getPaymentAmount(date(2022, 9, 1), sampleMarket),
+            self.__testedСappedProduct.getPaymentAmount(
+                date(2022, 9, 1),
+                sampleMarket
+            ),
         )
 
     def testInTheMoneyPayoffWithCapCappedStrikePrice(self):
         sampleMarket = QuoteProviderStub(290)
         self.assertEqual(
             1 + 0.5 * 0.08,
-            self.__testedСappedProduct.getPaymentAmount(date(2022, 9, 1), sampleMarket),
+            self.__testedСappedProduct.getPaymentAmount(
+                date(2022, 9, 1),
+                sampleMarket
+            ),
         )
 
     def testOutOfTheMoneyPayoffWithCap(self):
         sampleMarket = QuoteProviderStub(230)
         self.assertEqual(
             1,
-            self.__testedСappedProduct.getPaymentAmount(date(2022, 9, 1), sampleMarket),
+            self.__testedСappedProduct.getPaymentAmount(
+                date(2022, 9, 1),
+                sampleMarket
+            ),
         )
 
     def testAtTheMoneyPayoffWithCap(self):
         sampleMarket = QuoteProviderStub(250)
         self.assertEqual(
             1,
-            self.__testedСappedProduct.getPaymentAmount(date(2022, 9, 1), sampleMarket),
+            self.__testedСappedProduct.getPaymentAmount(
+                date(2022, 9, 1),
+                sampleMarket
+            ),
         )

@@ -14,7 +14,10 @@ class Pricer:
         pass
 
     def getCallOptionBasePrice(
-        self, underlying: str, strike: float, maturityDate: date
+        self,
+        underlying: str,
+        strike: float,
+        maturityDate: date,
     ) -> float:
         pass
 
