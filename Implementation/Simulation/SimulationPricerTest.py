@@ -6,7 +6,6 @@ from unittest import TestCase
 from unittest.mock import patch
 
 import numpy as np
-
 from Products.QuoteProvider import QuoteProvider
 from Simulation.SimulationPricer import SimulationPricer
 
@@ -15,8 +14,11 @@ class QuoteProviderStub(QuoteProvider):
     def __init__(self, value: float):
         self.__value = value
 
-    def getQuotes(self, ticker: str, observationDates: List[date]) -> List[
-        float]:
+    def getQuotes(
+        self,
+        ticker: str,
+        observationDates: List[date]
+    ) -> List[float]:
 
         if ticker == "GAZP" and observationDates == [date(2022, 9, 1)]:
             return [self.__value]
