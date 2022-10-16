@@ -2,10 +2,11 @@ from datetime import date
 from math import log, sqrt
 from typing import List
 
+from scipy.stats import norm
+
 from Products.CashFlow import CashFlow
 from Products.Pricer import Pricer
 from Products.QuoteProvider import QuoteProvider
-from scipy.stats import norm
 from Simulation.CovarianceTermStructure import CovarianceTermStructure
 from Simulation.DiscountCurve import DiscountCurve
 
@@ -17,7 +18,7 @@ class SimulationPricer(Pricer):
         valuationDate: date,
         originalMarket: QuoteProvider,
         discountCurve: DiscountCurve,
-        covariance: CovarianceTermStructure,
+        covariance: CovarianceTermStructure
     ):
         self.__underlyings = underlyings
         self.__valuationDate = valuationDate
@@ -29,24 +30,26 @@ class SimulationPricer(Pricer):
         return self.__discountCurve.getDiscountFactor(paymentDate)
 
     def getCallOptionBasePrice(
-        self, underlying: str, strike: float, maturityDate: date
+        self,
+        underlying: str,
+        strike: float,
+        maturityDate: date
     ) -> float:
-        idx = self.__underlyings.index(underlying)
+        undelyingIndex = self.__underlyings.index(underlying)
         totalCovariance = self.__covariance.getTotalCovariance(maturityDate)
-        totalVariance = totalCovariance[idx, idx]
+        totalVariance = totalCovariance[undelyingIndex, undelyingIndex]
         spotPrice = self.__originalMarket.getQuotes(
             ticker=underlying,
-            observationDates=[self.__valuationDate],
+            observationDates=[self.__valuationDate]
         )[0]
         discountFactor = self.getDiscountFactor(self.__valuationDate)
         forwardPrice = spotPrice / discountFactor
-        d_1 = log(
+        d1 = log(
             (forwardPrice / strike) + totalVariance / 2
         ) / sqrt(totalVariance)
-        d_2 = d_1 - sqrt(totalVariance)
-        N_1 = norm.cdf(d_1)
-        N_2 = norm.cdf(d_2)
-        return discountFactor * (forwardPrice * N_1 - strike * N_2)
+        d2 = d1 - sqrt(totalVariance)
+        return discountFactor * (
+                forwardPrice * norm.cdf(d1) - strike * norm.cdf(d2))
 
     def getCashFlowBasePrice(self, pricedElement: CashFlow) -> float:
         pass
