@@ -45,21 +45,21 @@ class SimulationPricerTest(TestCase):
         )
 
     def testCallOptionBasePrice(self):
-        testParameters = namedtuple("TestConfig", "strike expected")
+        testParameters = namedtuple("testParameters", "strike expected")
         testMap = {
             'InTheMoney': testParameters(strike=200, expected=51.71),
             'AtTheMoney': testParameters(strike=250, expected=10.96),
             'OutOfTheMoney': testParameters(strike=300, expected=0.45)
         }
-        for testCase, testCase in testMap.items():
+        for testCase, testParams in testMap.items():
             with self.subTest(name=testCase):
                 result = self.__testedPricer.getCallOptionBasePrice(
                     underlying="GAZP",
-                    strike=testCase.strike,
+                    strike=testParams.strike,
                     maturityDate=date(2022, 10, 1)
                 )
                 self.assertAlmostEqual(
                     result,
-                    testCase.expected,
+                    testParams.expected,
                     places=1
                 )

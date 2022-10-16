@@ -1,3 +1,4 @@
+from collections import namedtuple
 from datetime import date
 from typing import List
 from unittest import TestCase
@@ -13,7 +14,7 @@ class QuoteProviderStub(QuoteProvider):
     def getQuotes(
         self,
         ticker: str,
-        observationDates: List[date],
+        observationDates: List[date]
     ) -> List[float]:
 
         if ticker == "GAZP" and observationDates == [date(2022, 9, 1)]:
@@ -30,7 +31,7 @@ class VanillaStructuredProductTest(TestCase):
             strike=250,
             maturityDate=date(2022, 9, 1),
         )
-        self.__testedСappedProduct = VanillaStructuredProduct(
+        self.__testedCappedProduct = VanillaStructuredProduct(
             underlying="GAZP",
             participation=0.5,
             strike=250,
@@ -40,82 +41,67 @@ class VanillaStructuredProductTest(TestCase):
 
     def testPaymentDates(self):
         self.assertEqual(
-            [date(2022, 9, 1)], self.__testedUncappedProduct.getPaymentDates()
+            [date(2022, 9, 1)],
+            self.__testedUncappedProduct.getPaymentDates()
         )
 
-    def testInTheMoneyPayoff(self):
-        sampleMarket = QuoteProviderStub(260)
-        self.assertEqual(
-            1 + 0.65 * 10 / 250,
-            self.__testedUncappedProduct.getPaymentAmount(
-                date(2022, 9, 1), sampleMarket
-            ),
+    def testUncappedPayoff(self):
+        testParameters = namedtuple(
+            "testParameters",
+            "underlyingQuote expected"
         )
+        testMap = {
+            'In the money': testParameters(
+                underlyingQuote=260,
+                expected=1 + 0.65 * 10 / 250
+            ),
+            'At the money': testParameters(underlyingQuote=250, expected=1),
+            'Out of the money': testParameters(underlyingQuote=230, expected=1)
+        }
+        for testCase, testParams in testMap.items():
+            with self.subTest(testCase):
+                self.assertEqual(
+                    testParams.expected,
+                    self.__testedUncappedProduct.getPaymentAmount(
+                        date(2022, 9, 1),
+                        QuoteProviderStub(testParams.underlyingQuote)
+                    ),
+                )
 
-    def testOutOfTheMoneyPayoff(self):
-        sampleMarket = QuoteProviderStub(230)
-        self.assertEqual(
-            1,
-            self.__testedUncappedProduct.getPaymentAmount(
-                date(2022, 9, 1), sampleMarket
-            ),
+    def testCappedPayoff(self):
+        testParameters = namedtuple(
+            "testParameters",
+            "underlyingQuote expected"
         )
+        testMap = {
+            'At the money, with cap': testParameters(
+                underlyingQuote=250,
+                expected=1
+            ),
+            'Out of the money, with cap': testParameters(
+                underlyingQuote=230,
+                expected=1
+            ),
+            'In the money, strike price': testParameters(
+                underlyingQuote=290,
+                expected=1 + 0.5 * 0.08
+            ),
+            'In the money, with cap capped': testParameters(
+                underlyingQuote=300,
+                expected=1 + 0.5 * 0.08
+            ),
+            'In the money, with cap non capped': testParameters(
+                underlyingQuote=260,
+                expected=1 + 0.5 * 10 / 250
+            )
+        }
 
-    def testAtTheMoneyPayoff(self):
-        sampleMarket = QuoteProviderStub(250)
-        self.assertEqual(
-            1,
-            self.__testedUncappedProduct.getPaymentAmount(
-                date(2022, 9, 1), sampleMarket
-            ),
-        )
-
-    def testInTheMoneyPayoffWithCapNonCapped(self):
-        sampleMarket = QuoteProviderStub(260)
-        self.assertEqual(
-            1 + 0.5 * 10 / 250,
-            self.__testedСappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
-
-    def testInTheMoneyPayoffWithCapCapped(self):
-        sampleMarket = QuoteProviderStub(300)
-        self.assertEqual(
-            1 + 0.5 * 0.08,
-            self.__testedСappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
-
-    def testInTheMoneyPayoffWithCapCappedStrikePrice(self):
-        sampleMarket = QuoteProviderStub(290)
-        self.assertEqual(
-            1 + 0.5 * 0.08,
-            self.__testedСappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
-
-    def testOutOfTheMoneyPayoffWithCap(self):
-        sampleMarket = QuoteProviderStub(230)
-        self.assertEqual(
-            1,
-            self.__testedСappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
-
-    def testAtTheMoneyPayoffWithCap(self):
-        sampleMarket = QuoteProviderStub(250)
-        self.assertEqual(
-            1,
-            self.__testedСappedProduct.getPaymentAmount(
-                date(2022, 9, 1),
-                sampleMarket
-            ),
-        )
+        for testCase, testParams in testMap.items():
+            with self.subTest(testCase):
+                self.assertEqual(
+                    testParams.expected,
+                    self.__testedCappedProduct.getPaymentAmount(
+                        date(2022, 9, 1),
+                        QuoteProviderStub(testParams.underlyingQuote)
+                    ),
+                )
