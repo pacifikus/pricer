@@ -3,6 +3,7 @@ from datetime import date
 from typing import List
 from unittest import TestCase
 
+from Products.Pricer import Pricer
 from Products.QuoteProvider import QuoteProvider
 from Products.VanillaStructuredProduct import VanillaStructuredProduct
 
@@ -23,6 +24,16 @@ class QuoteProviderStub(QuoteProvider):
             raise NotImplementedError()
 
 
+class PricerStub(Pricer):
+    def getCallOptionBasePrice(
+        self,
+        underlying: str,
+        strike: float,
+        maturityDate: date
+    ) -> float:
+        return 300 - strike
+
+
 class VanillaStructuredProductTest(TestCase):
     def setUp(self) -> None:
         self.__testedUncappedProduct = VanillaStructuredProduct(
@@ -38,6 +49,7 @@ class VanillaStructuredProductTest(TestCase):
             maturityDate=date(2022, 9, 1),
             cap=0.08,
         )
+        self.pricer = PricerStub()
 
     def testPaymentDates(self):
         self.assertEqual(
@@ -105,3 +117,33 @@ class VanillaStructuredProductTest(TestCase):
                         QuoteProviderStub(testParams.underlyingQuote)
                     ),
                 )
+
+    def testCappedBasePrice(self):
+        result = self.__testedCappedProduct.getBasePrice(
+            valuationDate=date(2022, 9, 1),
+            pricer=self.pricer
+        )
+        callBasePrice = self.pricer.getCallOptionBasePrice(
+            underlying="GAZP",
+            strike=250,
+            maturityDate=date(2022, 9, 1)
+        )
+        callCapBasePrice = self.pricer.getCallOptionBasePrice(
+            underlying="GAZP",
+            strike=250 * (1 + 0.08 / 0.5),
+            maturityDate=date(2022, 9, 1)
+        )
+        expected = callBasePrice - callCapBasePrice + 1
+        self.assertEqual(expected, result)
+
+    def testUncappedBasePrice(self):
+        result = self.__testedUncappedProduct.getBasePrice(
+            valuationDate=date(2022, 9, 1),
+            pricer=self.pricer
+        )
+        expected = self.pricer.getCallOptionBasePrice(
+            underlying="GAZP",
+            strike=250,
+            maturityDate=date(2022, 9, 1)
+        ) + 1
+        self.assertEqual(expected, result)
