@@ -14,7 +14,7 @@ class VanillaStructuredProduct(CashFlow, Derivative):
         participation: float,
         strike: float,
         maturityDate: date,
-        cap: Optional[float] = None,
+        cap: Optional[float] = None
     ):
         self.__underlying = underlying
         self.__participation = participation
@@ -33,7 +33,7 @@ class VanillaStructuredProduct(CashFlow, Derivative):
     def getPaymentAmount(
         self,
         paymentDate: date,
-        market: QuoteProvider,
+        market: QuoteProvider
     ) -> float:
         underlyingQuote = market.getQuotes(self.__underlying, [paymentDate])[0]
         upside = max(underlyingQuote - self.__strike, 0) / self.__strike
@@ -43,10 +43,17 @@ class VanillaStructuredProduct(CashFlow, Derivative):
             return 1 + self.__participation * upside
 
     def getBasePrice(self, valuationDate: date, pricer: Pricer) -> float:
-        strike = self.__capStrike if self.__cap else self.__strike
         callOptionBasePrice = pricer.getCallOptionBasePrice(
             self.__underlying,
-            strike,
-            valuationDate,
+            self.__strike,
+            valuationDate
         )
-        return callOptionBasePrice + 1
+        if self.__cap is not None:
+            callCapOptionBasePrice = pricer.getCallOptionBasePrice(
+                self.__underlying,
+                self.__capStrike,
+                valuationDate
+            )
+            return callOptionBasePrice - callCapOptionBasePrice + 1
+        else:
+            return callOptionBasePrice + 1
