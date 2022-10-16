@@ -38,7 +38,7 @@ class VanillaStructuredProduct(CashFlow, Derivative):
         underlyingQuote = market.getQuotes(self.__underlying, [paymentDate])[0]
         upside = max(underlyingQuote - self.__strike, 0) / self.__strike
         if self.__cap and underlyingQuote >= self.__capStrike:
-            return 1 + self.__participation * self.__cap
+            return 1 + self.__cap
         else:
             return 1 + self.__participation * upside
 

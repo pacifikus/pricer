@@ -84,11 +84,11 @@ class VanillaStructuredProductTest(TestCase):
             ),
             'In the money, strike price': testParameters(
                 underlyingQuote=290,
-                expected=1 + 0.5 * 0.08
+                expected=1 + 0.08
             ),
             'In the money, with cap capped': testParameters(
                 underlyingQuote=300,
-                expected=1 + 0.5 * 0.08
+                expected=1 + 0.08
             ),
             'In the money, with cap non capped': testParameters(
                 underlyingQuote=260,
