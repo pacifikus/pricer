@@ -1,7 +1,8 @@
-from abc import ABC
+from abc import ABC, abstractmethod
+from typing import Tuple
 
-import numpy as np
 
-
-class Matrix(ABC, np.ndarray):
-    pass
+class Matrix(ABC):
+    @abstractmethod
+    def __getitem__(self, *args: Tuple[int, int]):
+        pass
