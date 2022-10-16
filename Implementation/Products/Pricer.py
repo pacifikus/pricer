@@ -17,7 +17,7 @@ class Pricer:
         self,
         underlying: str,
         strike: float,
-        maturityDate: date,
+        maturityDate: date
     ) -> float:
         pass
 

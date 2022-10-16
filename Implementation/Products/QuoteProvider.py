@@ -8,6 +8,6 @@ class QuoteProvider(ABC):
     def getQuotes(
         self,
         ticker: str,
-        observationDates: List[date],
+        observationDates: List[date]
     ) -> List[float]:
         pass

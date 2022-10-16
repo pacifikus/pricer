@@ -14,6 +14,6 @@ class CashFlow(ABC):
     def getPaymentAmount(
         self,
         paymentDate: date,
-        market: QuoteProvider,
+        market: QuoteProvider
     ) -> float:
         pass
