@@ -28,14 +28,15 @@ class VanillaStructuredProductTest(TestCase):
             underlying="GAZP",
             participation=0.65,
             strike=250,
-            maturityDate=date(2022, 9, 1),
+            maturityDate=date(2022, 9, 1)
         )
-        self.__testedСappedProduct = VanillaStructuredProduct(
+
+        self.__testedCappedProduct = VanillaStructuredProduct(
             underlying="GAZP",
             participation=0.5,
             strike=250,
             maturityDate=date(2022, 9, 1),
-            cap=0.08,
+            cap=0.08
         )
 
     def testPaymentDates(self):
@@ -43,12 +44,12 @@ class VanillaStructuredProductTest(TestCase):
             [date(2022, 9, 1)],
             self.__testedUncappedProduct.getPaymentDates()
         )
-        
+
     def testUncappedPayoff(self):
         for underlyingQuote, expectedResult, testCase in [
-            (260, 1 + 0.65 * 10 / 250, "In the money"),
-            (250, 1, "At the money"),
             (230, 1, "Out of the money"),
+            (250, 1, "At the money"),
+            (260, 1 + 0.65 * 10 / 250, "In the money")
         ]:
             with self.subTest(testCase):
                 self.assertEqual(
@@ -56,22 +57,22 @@ class VanillaStructuredProductTest(TestCase):
                     self.__testedUncappedProduct.getPaymentAmount(
                         date(2022, 9, 1),
                         QuoteProviderStub(underlyingQuote)
-                    ),
+                    )
                 )
-        
+
     def testCappedPayoff(self):
         for underlyingQuote, expectedResult, testCase in [
-            (250, 1, "At the money, with cap"),
-            (230, 1, "Out of the money, with cap"),
-            (290, 1 + 0.5 * 0.08, "In the money, strike price"),
-            (300, 1 + 0.5 * 0.08, "In the money, with cap capped"),
-            (260, 1 + 0.5 * 10 / 250, "In the money, with cap non capped"),
+            (230, 1, "Out of the money"),
+            (250, 1, "At the money"),
+            (260, 1 + 0.5 * 10 / 250, "In the money before cap"),
+            (290, 1 + 0.5 * 0.08, "At cap strike price"),
+            (300, 1 + 0.5 * 0.08, "Deeply in the money")
         ]:
             with self.subTest(testCase):
                 self.assertEqual(
                     expectedResult,
-                    self.__testedСappedProduct.getPaymentAmount(
+                    self.__testedCappedProduct.getPaymentAmount(
                         date(2022, 9, 1),
                         QuoteProviderStub(underlyingQuote)
-                    ),
+                    )
                 )
