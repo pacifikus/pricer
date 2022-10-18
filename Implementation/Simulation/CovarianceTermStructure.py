@@ -8,5 +8,5 @@ class CovarianceTermStructure(ABC):
         pass
 
     @abstractmethod
-    def getTotalCovariance(self, ForecastDate: date):
+    def getTotalCovariance(self, forecastDate: date):
         pass
