@@ -3,6 +3,7 @@ from datetime import date
 from typing import List
 from unittest import TestCase
 
+from Products.CashFlow import CashFlow
 from Products.Pricer import Pricer
 from Products.QuoteProvider import QuoteProvider
 from Products.VanillaStructuredProduct import VanillaStructuredProduct
@@ -25,6 +26,15 @@ class QuoteProviderStub(QuoteProvider):
 
 
 class PricerStub(Pricer):
+    def getValuationDate(self) -> date:
+        pass
+
+    def getDiscountFactor(self, paymentDate: date) -> float:
+        pass
+
+    def getCashFlowBasePrice(self, pricedElement: CashFlow) -> float:
+        pass
+
     def getCallOptionBasePrice(
         self,
         underlying: str,
