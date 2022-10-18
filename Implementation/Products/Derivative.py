@@ -8,7 +8,7 @@ from Products.QuoteProvider import QuoteProvider
 
 
 class Derivative(PriceableElement, ABC):
-    pricer = None
+    pricerCreator = None
 
     def getPrice(self, valuationDate: date, market: QuoteProvider) -> float:
         pass
@@ -19,4 +19,4 @@ class Derivative(PriceableElement, ABC):
 
     @staticmethod
     def setPricerCreator(newPricerCreator: PricerFactory):
-        Derivative.pricer = newPricerCreator.createPricer()
+        Derivative.pricerCreator = newPricerCreator
