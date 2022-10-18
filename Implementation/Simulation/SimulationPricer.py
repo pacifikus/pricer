@@ -36,18 +36,22 @@ class SimulationPricer(Pricer):
         maturityDate: date
     ) -> float:
         undelyingIndex = self.__underlyings.index(underlying)
-        totalCovariance = self.__covariance.getTotalCovariance(maturityDate)
-        totalVariance = totalCovariance[undelyingIndex, undelyingIndex]
+        totalVariance = self.__covariance.getTotalCovariance(maturityDate)[
+            undelyingIndex,
+            undelyingIndex
+        ]
         spotPrice = self.__originalMarket.getQuotes(
             ticker=underlying,
             observationDates=[self.__valuationDate]
         )[0]
         discountFactor = self.getDiscountFactor(self.__valuationDate)
         forwardPrice = spotPrice / discountFactor
-        d1 = log(
-            (forwardPrice / strike) + totalVariance / 2
-        ) / sqrt(totalVariance)
-        d2 = d1 - sqrt(totalVariance)
+        d1 = (log(forwardPrice / strike) + totalVariance / 2) / sqrt(
+            totalVariance
+        )
+        d2 = (log(forwardPrice / strike) - totalVariance / 2) / sqrt(
+            totalVariance
+        )
         return discountFactor * (
                 forwardPrice * norm.cdf(d1) - strike * norm.cdf(d2))
 

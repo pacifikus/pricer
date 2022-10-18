@@ -47,8 +47,8 @@ class SimulationPricerTest(TestCase):
     def testCallOptionBasePrice(self):
         testParameters = namedtuple("testParameters", "strike expected")
         testMap = {
-            'InTheMoney': testParameters(strike=200, expected=51.71),
-            'AtTheMoney': testParameters(strike=250, expected=10.96),
+            'InTheMoney': testParameters(strike=200, expected=51.72),
+            'AtTheMoney': testParameters(strike=250, expected=10.99),
             'OutOfTheMoney': testParameters(strike=300, expected=0.45)
         }
         for testCase, testParams in testMap.items():
@@ -58,8 +58,8 @@ class SimulationPricerTest(TestCase):
                     strike=testParams.strike,
                     maturityDate=date(2022, 10, 1)
                 )
-                self.assertAlmostEqual(
-                    result,
+
+                self.assertEqual(
+                    round(result, 2),
                     testParams.expected,
-                    places=1
                 )
