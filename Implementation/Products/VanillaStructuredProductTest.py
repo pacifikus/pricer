@@ -70,20 +70,26 @@ class VanillaStructuredProductTest(TestCase):
     def testUncappedPayoff(self):
         testParameters = namedtuple(
             "testParameters",
-            "underlyingQuote expected"
+            ["underlyingQuote", "expectedResult"]
         )
         testMap = {
             'In the money': testParameters(
                 underlyingQuote=260,
-                expected=1 + 0.65 * 10 / 250
+                expectedResult=1 + 0.65 * 10 / 250
             ),
-            'At the money': testParameters(underlyingQuote=250, expected=1),
-            'Out of the money': testParameters(underlyingQuote=230, expected=1)
+            'At the money': testParameters(
+                underlyingQuote=250,
+                expectedResult=1
+            ),
+            'Out of the money': testParameters(
+                underlyingQuote=230,
+                expectedResult=1
+            )
         }
         for testCase, testParams in testMap.items():
             with self.subTest(testCase):
                 self.assertEqual(
-                    testParams.expected,
+                    testParams.expectedResult,
                     self.__testedUncappedProduct.getPaymentAmount(
                         date(2022, 9, 1),
                         QuoteProviderStub(testParams.underlyingQuote)
@@ -93,35 +99,35 @@ class VanillaStructuredProductTest(TestCase):
     def testCappedPayoff(self):
         testParameters = namedtuple(
             "testParameters",
-            "underlyingQuote expected"
+            ["underlyingQuote", "expectedResult"]
         )
         testMap = {
-            'At the money, with cap': testParameters(
+            'At the money': testParameters(
                 underlyingQuote=250,
-                expected=1
+                expectedResult=1
             ),
-            'Out of the money, with cap': testParameters(
+            'Out of the money': testParameters(
                 underlyingQuote=230,
-                expected=1
+                expectedResult=1
             ),
-            'In the money, strike price': testParameters(
+            'In the money, cap strike price': testParameters(
                 underlyingQuote=290,
-                expected=1 + 0.08
+                expectedResult=1 + 0.08
             ),
-            'In the money, with cap capped': testParameters(
+            'In the money, capped': testParameters(
                 underlyingQuote=300,
-                expected=1 + 0.08
+                expectedResult=1 + 0.08
             ),
-            'In the money, with cap non capped': testParameters(
+            'In the money, non capped': testParameters(
                 underlyingQuote=260,
-                expected=1 + 0.5 * 10 / 250
+                expectedResult=1 + 0.5 * 10 / 250
             )
         }
 
         for testCase, testParams in testMap.items():
             with self.subTest(testCase):
                 self.assertEqual(
-                    testParams.expected,
+                    testParams.expectedResult,
                     self.__testedCappedProduct.getPaymentAmount(
                         date(2022, 9, 1),
                         QuoteProviderStub(testParams.underlyingQuote)
@@ -143,17 +149,17 @@ class VanillaStructuredProductTest(TestCase):
             strike=250 * (1 + 0.08 / 0.5),
             maturityDate=date(2022, 9, 1)
         )
-        expected = callBasePrice - callCapBasePrice + 1
-        self.assertEqual(expected, result)
+        expectedResult = callBasePrice - callCapBasePrice + 1
+        self.assertEqual(expectedResult, result)
 
     def testUncappedBasePrice(self):
         result = self.__testedUncappedProduct.getBasePrice(
             valuationDate=date(2022, 9, 1),
             pricer=self.pricer
         )
-        expected = self.pricer.getCallOptionBasePrice(
+        expectedResult = self.pricer.getCallOptionBasePrice(
             underlying="GAZP",
             strike=250,
             maturityDate=date(2022, 9, 1)
         ) + 1
-        self.assertEqual(expected, result)
+        self.assertEqual(expectedResult, result)

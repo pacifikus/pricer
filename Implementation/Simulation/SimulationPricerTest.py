@@ -45,11 +45,14 @@ class SimulationPricerTest(TestCase):
         )
 
     def testCallOptionBasePrice(self):
-        testParameters = namedtuple("testParameters", "strike expected")
+        testParameters = namedtuple(
+            "testParameters",
+            ["strike", "expectedResult"]
+        )
         testMap = {
-            'InTheMoney': testParameters(strike=200, expected=51.72),
-            'AtTheMoney': testParameters(strike=250, expected=10.99),
-            'OutOfTheMoney': testParameters(strike=300, expected=0.45)
+            'InTheMoney': testParameters(strike=200, expectedResult=51.715),
+            'AtTheMoney': testParameters(strike=250, expectedResult=10.985),
+            'OutOfTheMoney': testParameters(strike=300, expectedResult=0.451)
         }
         for testCase, testParams in testMap.items():
             with self.subTest(name=testCase):
@@ -60,6 +63,6 @@ class SimulationPricerTest(TestCase):
                 )
 
                 self.assertEqual(
-                    round(result, 2),
-                    testParams.expected,
+                    round(result, 3),
+                    testParams.expectedResult,
                 )
