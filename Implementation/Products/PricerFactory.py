@@ -12,6 +12,6 @@ class PricerFactory(ABC):
         self,
         valuationDate: date,
         underlyings: List[str],
-        marker: QuoteProvider
+        market: QuoteProvider
     ) -> Pricer:
         pass
