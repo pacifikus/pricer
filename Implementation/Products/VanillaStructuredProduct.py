@@ -54,6 +54,9 @@ class VanillaStructuredProduct(CashFlow, Derivative):
                 self.__capStrike,
                 valuationDate
             )
-            return callOptionBasePrice - callCapOptionBasePrice + 1
+            return callOptionBasePrice - callCapOptionBasePrice + 1 * \
+                   pricer.getDiscountFactor(self.__maturityDate)
         else:
-            return callOptionBasePrice + 1
+            return callOptionBasePrice + 1 * pricer.getDiscountFactor(
+                self.__maturityDate
+            )
