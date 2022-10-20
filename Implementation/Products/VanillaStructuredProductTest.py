@@ -30,7 +30,8 @@ class PricerStub(Pricer):
         pass
 
     def getDiscountFactor(self, paymentDate: date) -> float:
-        pass
+        rate = 0.1
+        return -rate * 30 / 365
 
     def getCashFlowBasePrice(self, pricedElement: CashFlow) -> float:
         pass
@@ -41,29 +42,30 @@ class PricerStub(Pricer):
         strike: float,
         maturityDate: date
     ) -> float:
-        return 300 - strike
+        return max(300 - strike, 0)
 
 
 class VanillaStructuredProductTest(TestCase):
     def setUp(self) -> None:
+        self.__maturityDate = date(2022, 9, 1)
         self.__testedUncappedProduct = VanillaStructuredProduct(
             underlying="GAZP",
             participation=0.65,
             strike=250,
-            maturityDate=date(2022, 9, 1),
+            maturityDate=self.__maturityDate
         )
         self.__testedCappedProduct = VanillaStructuredProduct(
             underlying="GAZP",
             participation=0.5,
             strike=250,
-            maturityDate=date(2022, 9, 1),
-            cap=0.08,
+            maturityDate=self.__maturityDate,
+            cap=0.08
         )
-        self.pricer = PricerStub()
+        self.__pricer = PricerStub()
 
     def testPaymentDates(self):
         self.assertEqual(
-            [date(2022, 9, 1)],
+            [self.__maturityDate],
             self.__testedUncappedProduct.getPaymentDates()
         )
 
@@ -91,9 +93,9 @@ class VanillaStructuredProductTest(TestCase):
                 self.assertEqual(
                     testParams.expectedResult,
                     self.__testedUncappedProduct.getPaymentAmount(
-                        date(2022, 9, 1),
+                        self.__maturityDate,
                         QuoteProviderStub(testParams.underlyingQuote)
-                    ),
+                    )
                 )
 
     def testCappedPayoff(self):
@@ -129,37 +131,38 @@ class VanillaStructuredProductTest(TestCase):
                 self.assertEqual(
                     testParams.expectedResult,
                     self.__testedCappedProduct.getPaymentAmount(
-                        date(2022, 9, 1),
+                        self.__maturityDate,
                         QuoteProviderStub(testParams.underlyingQuote)
                     ),
                 )
 
     def testCappedBasePrice(self):
         result = self.__testedCappedProduct.getBasePrice(
-            valuationDate=date(2022, 9, 1),
-            pricer=self.pricer
+            valuationDate=self.__maturityDate,
+            pricer=self.__pricer
         )
-        callBasePrice = self.pricer.getCallOptionBasePrice(
+        callBasePrice = self.__pricer.getCallOptionBasePrice(
             underlying="GAZP",
             strike=250,
-            maturityDate=date(2022, 9, 1)
+            maturityDate=self.__maturityDate
         )
-        callCapBasePrice = self.pricer.getCallOptionBasePrice(
+        callCapBasePrice = self.__pricer.getCallOptionBasePrice(
             underlying="GAZP",
             strike=250 * (1 + 0.08 / 0.5),
-            maturityDate=date(2022, 9, 1)
+            maturityDate=self.__maturityDate
         )
-        expectedResult = callBasePrice - callCapBasePrice + 1
+        expectedResult = callBasePrice - callCapBasePrice + 1 * \
+                         self.__pricer.getDiscountFactor(self.__maturityDate)
         self.assertEqual(expectedResult, result)
 
     def testUncappedBasePrice(self):
         result = self.__testedUncappedProduct.getBasePrice(
-            valuationDate=date(2022, 9, 1),
-            pricer=self.pricer
+            valuationDate=self.__maturityDate,
+            pricer=self.__pricer
         )
-        expectedResult = self.pricer.getCallOptionBasePrice(
+        expectedResult = self.__pricer.getCallOptionBasePrice(
             underlying="GAZP",
             strike=250,
-            maturityDate=date(2022, 9, 1)
-        ) + 1
+            maturityDate=self.__maturityDate
+        ) + 1 * self.__pricer.getDiscountFactor(self.__maturityDate)
         self.assertEqual(expectedResult, result)

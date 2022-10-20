@@ -18,13 +18,16 @@ class SimulationPricer(Pricer):
         valuationDate: date,
         originalMarket: QuoteProvider,
         discountCurve: DiscountCurve,
-        covariance: CovarianceTermStructure
+        underlyingCovarianceForecast: CovarianceTermStructure
     ):
         self.__underlyings = underlyings
         self.__valuationDate = valuationDate
         self.__originalMarket = originalMarket
         self.__discountCurve = discountCurve
-        self.__covariance = covariance
+        self.__underlyingCovarianceForecast = underlyingCovarianceForecast
+
+    def getValuationDate(self) -> date:
+        return self.__valuationDate
 
     def getDiscountFactor(self, paymentDate: date) -> float:
         return self.__discountCurve.getDiscountFactor(paymentDate)
@@ -36,10 +39,10 @@ class SimulationPricer(Pricer):
         maturityDate: date
     ) -> float:
         undelyingIndex = self.__underlyings.index(underlying)
-        totalVariance = self.__covariance.getTotalCovariance(maturityDate)[
-            undelyingIndex,
-            undelyingIndex
-        ]
+        totalVariance = \
+            self.__underlyingCovarianceForecast.getTotalCovariance(
+                maturityDate
+            )[undelyingIndex, undelyingIndex]
         spotPrice = self.__originalMarket.getQuotes(
             ticker=underlying,
             observationDates=[self.__valuationDate]
@@ -57,6 +60,3 @@ class SimulationPricer(Pricer):
 
     def getCashFlowBasePrice(self, pricedElement: CashFlow) -> float:
         pass
-
-    def getValuationDate(self) -> date:
-        return self.__valuationDate

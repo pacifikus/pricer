@@ -31,7 +31,7 @@ class SimulationPricerTest(TestCase):
 
         self.__testedPricer = SimulationPricer(
             underlyings=["GAZP"],
-            covariance=mockCovariance,
+            underlyingCovarianceForecast=mockCovariance,
             valuationDate=date(2022, 9, 1),
             originalMarket=mockQuoteProvider,
             discountCurve=self.__mockDiscountCurve
@@ -64,5 +64,5 @@ class SimulationPricerTest(TestCase):
 
                 self.assertEqual(
                     round(result, 3),
-                    testParams.expectedResult,
+                    testParams.expectedResult
                 )

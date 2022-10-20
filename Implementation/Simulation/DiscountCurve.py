@@ -8,5 +8,5 @@ class DiscountCurve(ABC):
         pass
 
     @abstractmethod
-    def getDiscountFactor(self, paymentDate) -> float:
+    def getDiscountFactor(self, paymentDate: date) -> float:
         pass
