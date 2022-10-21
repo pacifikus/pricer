@@ -133,7 +133,7 @@ class VanillaStructuredProductTest(TestCase):
                     self.__testedCappedProduct.getPaymentAmount(
                         self.__maturityDate,
                         QuoteProviderStub(testParams.underlyingQuote)
-                    ),
+                    )
                 )
 
     def testCappedBasePrice(self):
