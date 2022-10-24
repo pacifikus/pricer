@@ -30,9 +30,9 @@ class ApiMoexTest(TestCase):
         # cls.__session.close()
 
     def testStockQuotesFeed(self):
-        res = apimoex.get_board_history(
-             self.__session,
-             'GAZP',
+        self._session.get(
+            'https://iss.moex.com/iss/history/engines/stock/markets/shares/boards/TQBR/securities/GAZP.json',
+            params={'iss.only': 'history,history.cursor', 'history.columns': 'BOARDID,TRADEDATE,CLOSE,VOLUME,VALUE'}
         )
         # res = apimoex.get_board_history(
         #     self.__session,
