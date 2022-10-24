@@ -30,14 +30,17 @@ class ApiMoexTest(TestCase):
         # cls.__session.close()
 
     def testStockQuotesFeed(self):
-        res = apimoex.get_board_history(
-            self.__session,
-            'GAZP',
-            '2022-10-09',
-            '2022-10-10',
-            ('TRADEDATE', 'CLOSE'),
-            'TQBR'
-        )
+        res =  self.__session.get('https://www.google.com/')
+
+        print(res.text)
+        # res = apimoex.get_board_history(
+        #     self.__session,
+        #     'GAZP',
+        #     '2022-10-09',
+        #     '2022-10-10',
+        #     ('TRADEDATE', 'CLOSE'),
+        #     'TQBR'
+        # )
         for expectedQuote in sampleQuoteData:
             pass
             # with self.subTest(f"GAZP @ {expectedQuote['TRADEDATE']}"):
