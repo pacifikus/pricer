@@ -2,18 +2,16 @@ from abc import ABC, abstractmethod
 from datetime import date
 from typing import List
 
+from Products.Pricer import Pricer
 from Products.QuoteProvider import QuoteProvider
 
 
-class CashFlow(ABC):
+class PricerFactory(ABC):
     @abstractmethod
-    def getPaymentDates(self) -> List[date]:
-        pass
-
-    @abstractmethod
-    def getPaymentAmount(
+    def createPricer(
         self,
-        paymentDate: date,
+        valuationDate: date,
+        underlyings: List[str],
         market: QuoteProvider
-    ) -> float:
+    ) -> Pricer:
         pass
